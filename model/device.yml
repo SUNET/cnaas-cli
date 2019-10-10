@@ -1,0 +1,23 @@
+---
+cli:
+  - command:
+      name: 'foo'
+      description: "poo"
+      url: "/device"
+      attributes:
+        - name: "name"
+          mandatory: true
+          description: "device name"
+        - name: "management_ip"
+          mandatory: false
+          description: "device IP address"
+          
+  - command:
+      name: 'bar'
+      description: "boo"
+      url: "/apa"
+      attributes:
+        - name: "keff"
+          mandatory: true
+          description: "naaa"
+
