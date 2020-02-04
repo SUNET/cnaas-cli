@@ -1,8 +1,5 @@
 import sys
-import cmd
 import getopt
-import string
-import logging
 
 from command import CliHandler
 
@@ -33,7 +30,7 @@ def main(argv):
     try:
         cli = CliHandler(hostname, port, token=token)
         while True:
-            cli.command_loop()
+            cli.loop()
     except KeyboardInterrupt:
         print('\nSession closed, good bye!')
         sys.exit(0)
