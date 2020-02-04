@@ -1,109 +1,79 @@
 import requests
 
 from model import Cli
+from prettyprint import prettyprint
 
 
 class Rest():
     cli = Cli('cnaas.yml')
 
-    def terminal_size():
-        import fcntl, termios, struct
-        h, w, hp, wp = struct.unpack('HHHH', fcntl.ioctl(0, termios.TIOCGWINSZ, struct.pack('HHHH', 0, 0, 0, 0)))
-        return w, h
-
     @classmethod
-    def prettyprint(cls, data, command):
-        headers = []
-        values = ''
-        header_formatted = ''
-        forbidden = ['confhash', 'oob_ip', 'infra_ip', 'site_id', 'port']
+    def parse_args(cls, command):
+        """Parse arguments from command. Strip the first word, which is the
+        command itself and then build a dict with arguments.
 
-        if command == 'job':
-            command = 'jobs'
+        """
 
-        if type(data['data']) is str:
-            res = data['data'] + ' '
-            if 'job_id' in data:
-                res += '\nJob ID: ' + str(data['job_id'])
-            return res
-        content = data['data'][command]
-        for row in content:
-            for key in row:
-                if key in forbidden:
-                    continue
-                if key not in headers:
-                    headers.append(key)
-                values += ' %8s\t|' % str(row[key])
-            values += '\n'
-        for header in headers:
-            header_formatted += ' %8s\t|' % str(header)
+        args = command.split(' ')[1:]
+        command = command.split(' ')[0]
+        url = cls.cli.get_base_url() + cls.cli.get_url(command)
 
-        values = values.replace('\\n', '\n')
+        # Make a dict of arguments and values
+        args = dict(zip(args[::2], args[1::2]))
 
-        (tty_width, tty_height) = cls.terminal_size()
+        # Make sure we use bool and not str
+        for key in args:
+            if args[key] == 'true':
+                args[key] = True
+            if args[key] == 'false':
+                args[key] = False
 
-        return header_formatted + '\n' + '-' * tty_width + '\n' + values
+        # Sometimes we want to add something to the end of an URL.
+        new_args = dict()
+        for key in args:
+            if cls.cli.get_url_suffix(command, key):
+                url += '/' + str(args[key])
+            else:
+                new_args[key] = args[key]
+
+        return (url, new_args)
 
     @classmethod
     def get(cls, command, token):
-        args = command.split(' ')[1:]
+        """ GET method, call NMS with the right URL and arguments. """
+
+        (url, args) = cls.parse_args(command)
         command = command.split(' ')[0]
         headers = {'Authorization': 'Bearer ' + token}
-        url = cls.cli.get_base_url() + cls.cli.get_url(command)
 
         try:
-            args = dict(zip(args[::2], args[1::2]))
-            for key in args:
-                if args[key] == 'true':
-                    args[key] = True
-                if args[key] == 'false':
-                    args[key] = False
-        except Exception:
-            return 'Invalid list of arguments'
+            res = requests.get(url, headers=headers, json=args, verify=False)
 
-        new_args = dict()
-        for key in args:
-            if cls.cli.get_url_suffix(command, key):
-                url += '/' + str(args[key])
-            else:
-                new_args[key] = args[key]
-
-        res = requests.get(url, headers=headers, json=new_args)
-
-        if res.status_code != 200:
-            return 'Could not connect to NMS on ' + url
-        return cls.prettyprint(res.json(), command)
+            if res.status_code != 200:
+                return 'Could not connect to NMS on ' + url
+        except Exception as e:
+            return 'GET failed: ' + str(e)
+        return prettyprint(res.json(), command)
 
     @classmethod
     def post(cls, command, token):
-        args = command.split(' ')[1:]
+        """ POST method, call NMS with the right URL and arguments. """
+
+        (url, args) = cls.parse_args(command)
         command = command.split(' ')[0]
         headers = {'Authorization': 'Bearer ' + token}
-        url = cls.cli.get_base_url() + cls.cli.get_url(command)
 
         try:
-            args = dict(zip(args[::2], args[1::2]))
-            for key in args:
-                if args[key] == 'true':
-                    args[key] = True
-                if args[key] == 'false':
-                    args[key] = False
-        except Exception:
-            return 'Invalid list of arguments'
+            res = requests.post(url, headers=headers, json=args, verify=False)
 
-        new_args = dict()
-        for key in args:
-            if cls.cli.get_url_suffix(command, key):
-                url += '/' + str(args[key])
-            else:
-                new_args[key] = args[key]
-        res = requests.post(url, headers=headers, json=new_args)
-
-        if res.status_code != 200:
-            return 'Failed to sync device(s): ' + str(res.content)
-
-        return cls.prettyprint(res.json(), command)
+            if res.status_code != 200:
+                return 'Failed to sync device(s): ' + str(res.content)
+        except Exception as e:
+            return 'POST failed: ' + str(e)
+        return prettyprint(res.json(), command)
 
     @classmethod
     def delete(cls, command, token):
+        """ DELETE method, call NMS with the right URL and arguments. """
+
         return "test string for delete"
