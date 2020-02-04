@@ -2,6 +2,7 @@ import os
 import string
 import readline
 
+from prettyprint import terminal_size
 from model import Cli
 from rest import Rest
 
@@ -44,6 +45,8 @@ class CliHandler():
 
         if commandlen < 2 and not line.endswith(' '):
             commands = self.commands
+        elif line.startswith('help '):
+            commands = self.commands
         else:
             commands = self.cli.get_attributes(self.node_name)
         completions = [x for x in commands if x.startswith(line.split(' ')[-1])]
@@ -60,7 +63,23 @@ class CliHandler():
 
         Returns a helptext.
         """
-        return 'Helptext here: ' + line
+        command = line.split(' ')[1]
+
+        print('Description: ')
+        print('\t' + self.cli.get_command_description(command))
+
+        attributes = self.cli.get_attributes(command)
+        if attributes is None:
+            return ''
+
+        tty_w, tty_h = terminal_size()
+        print('-' * tty_w)
+
+        for attribute in attributes:
+            print('\t%s:%20s' % (attribute,
+                                 self.cli.get_description(command, attribute)))
+
+        return ''
 
     def parseline(self, line):
         """ Parse a command line.
@@ -96,7 +115,8 @@ class CliHandler():
                 print(readline.get_history_item(i + 1))
         elif command == 'help':
             for cmd in self.cli.get_commands():
-                print('%10s: %s' % (cmd, self.cli.get_command_description(cmd)))
+                description = self.cli.get_command_description(cmd)
+                print('%20s: %s' % (cmd, description))
         return ''
 
     def is_show(self, command):
@@ -129,12 +149,17 @@ class CliHandler():
         """ Find out if this is a valid command or not.
         """
 
-        if self.is_show(command) or self.is_no(command):
-            command = command.split(' ')[1]
-        else:
-            command = command.split(' ')[0]
+        attributes = command.split(' ')[1:]
+        command = command.split(' ')[1]
+
         if command not in self.commands:
             return False
+        spec_attributes = self.cli.get_attributes(command)
+        if spec_attributes is None:
+            return True
+        for attr in spec_attributes:
+            if attr not in attributes:
+                return False
         return True
 
     def strip(self, command):
