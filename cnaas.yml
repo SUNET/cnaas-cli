@@ -10,6 +10,18 @@ cli:
         - name: "get"
 
   - command:
+      name: 'device'
+      description: 'poo'
+      url: '/device'
+      attributes:
+        - name: 'id'
+          mandatory: true
+          description: 'Device ID'
+          url_suffix: true
+      methods:
+        - name: "get"
+
+  - command:
       name: 'sync'
       description: 'Sync to'
       url: '/device_syncto'
@@ -22,7 +34,7 @@ cli:
           description: 'group name'
         - name: 'all'
           mandatory: false
-          descriotion: 'sync all devices'
+          description: 'sync all devices'
         - name: 'dry_run'
           mandatory: true
           description: 'dry run'
@@ -32,6 +44,13 @@ cli:
       methods:
         - name: "post"
 
+  - command:
+      name: 'jobs'
+      description: 'Show jobs'
+      url: '/jobs'
+      attributes:
+      methods:
+        - name: 'get'
 
   - command:
       name: 'job'
@@ -46,9 +65,9 @@ cli:
         - name: 'get'
 
   - command:
-      name: 'jobs'
-      description: 'Show jobs'
-      url: '/jobs'
+      name: 'version'
+      description: 'Show version'
+      url: '/system/version'
       attributes:
       methods:
         - name: 'get'
