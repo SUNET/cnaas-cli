@@ -31,7 +31,7 @@ cli:
           description: 'force run'
       methods:
         - name: "post"
-          
+
 
   - command:
       name: 'job'
@@ -42,5 +42,13 @@ cli:
           mandatory: true
           description: 'Job ID'
           url_suffix: true
+      methods:
+        - name: 'get'
+
+  - command:
+      name: 'jobs'
+      description: 'Show jobs'
+      url: '/jobs'
+      attributes:
       methods:
         - name: 'get'
