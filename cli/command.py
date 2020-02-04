@@ -3,7 +3,7 @@ import string
 import readline
 
 from cli.prettyprint import terminal_size
-from cli.model import Cli
+from cli.parser import CliParser
 from cli.rest import Rest
 
 
@@ -15,7 +15,7 @@ class CliHandler():
 
         self.token = token
         self.prompt = prompt
-        self.cli = Cli(model)
+        self.cli = CliParser(model)
         self.builtin = ['no', 'show', 'help', 'history']
         self.node_name = ''
         self.commands = self.cli.get_commands()
@@ -149,14 +149,21 @@ class CliHandler():
         """ Find out if this is a valid command or not.
         """
 
-        attributes = command.split(' ')[1:]
-        command = command.split(' ')[1]
-
+        command = command.rstrip()
+        if len(command.split(' ')) == 1:
+            attributes = None
+        else:
+            attributes = command.split(' ')[1:]
+            command = command.split(' ')[0]
+        if attributes is not None and len(attributes) % 2 != 0:
+            return False
         if command not in self.commands:
             return False
         spec_attributes = self.cli.get_attributes(command)
         if spec_attributes is None:
             return True
+        if attributes is None and spec_attributes is not None:
+            return False
         for attr in spec_attributes:
             if attr not in attributes:
                 return False

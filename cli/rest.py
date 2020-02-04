@@ -1,11 +1,11 @@
 import requests
 
-from cli.model import Cli
+from cli.parser import CliParser
 from cli.prettyprint import prettyprint
 
 
 class Rest():
-    cli = Cli('cnaas.yml')
+    cli = CliParser('cnaas.yml')
 
     @classmethod
     def parse_args(cls, command):
