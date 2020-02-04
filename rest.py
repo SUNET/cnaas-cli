@@ -6,7 +6,13 @@ from model import Cli
 class Rest():
     cli = Cli('cnaas.yml')
 
-    def prettyprint(data, command):
+    def terminal_size():
+        import fcntl, termios, struct
+        h, w, hp, wp = struct.unpack('HHHH', fcntl.ioctl(0, termios.TIOCGWINSZ, struct.pack('HHHH', 0, 0, 0, 0)))
+        return w, h
+
+    @classmethod
+    def prettyprint(cls, data, command):
         headers = []
         values = ''
         header_formatted = ''
@@ -32,7 +38,11 @@ class Rest():
         for header in headers:
             header_formatted += ' %8s\t|' % str(header)
 
-        return header_formatted + '\n' + '-' * len(header_formatted) + '\n' + values
+        values = values.replace('\\n', '\n')
+
+        (tty_width, tty_height) = cls.terminal_size()
+
+        return header_formatted + '\n' + '-' * tty_width + '\n' + values
 
     @classmethod
     def get(cls, command, token):
