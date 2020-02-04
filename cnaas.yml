@@ -1,0 +1,46 @@
+---
+base_url: 'http://localhost:5000/api/v1.0'
+cli:
+  - command:
+      name: 'devices'
+      description: 'poo'
+      url: '/devices'
+      attributes:
+      methods:
+        - name: "get"
+
+  - command:
+      name: 'sync'
+      description: 'Sync to'
+      url: '/device_syncto'
+      attributes:
+        - name: 'device_type'
+          mandatory: false
+          description: 'device name'
+        - name: 'group'
+          mandatory: false
+          description: 'group name'
+        - name: 'all'
+          mandatory: false
+          descriotion: 'sync all devices'
+        - name: 'dry_run'
+          mandatory: true
+          description: 'dry run'
+        - name: 'force'
+          mandatory: true
+          description: 'force run'
+      methods:
+        - name: "post"
+          
+
+  - command:
+      name: 'job'
+      description: 'Show job'
+      url: '/job'
+      attributes:
+        - name: 'id'
+          mandatory: true
+          description: 'Job ID'
+          url_suffix: true
+      methods:
+        - name: 'get'
