@@ -1,5 +1,4 @@
 import os
-import sys
 import string
 import readline
 
@@ -18,10 +17,10 @@ class CliHandler():
         self.cli = Cli(model)
         self.builtin = ['no', 'show', 'help', 'history']
         self.node_name = ''
-        self.commands = self.cli.commands()
+        self.commands = self.cli.get_commands()
         self.commands = self.commands + self.builtin
 
-    def command_read_line(self):
+    def read_line(self):
         """Read a command from standard in.
 
         Returns the whole line and the last word.
@@ -34,19 +33,19 @@ class CliHandler():
 
         return line, line.split(' ')[-1]
 
-    def command_complete(self, text, state):
+    def complete(self, text, state):
         """ Get possible commands based on what is already typed in.
 
         Returns a possible completion.
 
         """
-        line, last = self.command_read_line()
+        line, last = self.read_line()
+        commandlen = len(line.split(' '))
 
-        if len(line.split(' ')) < 2 and not line.endswith(' '):
+        if commandlen < 2 and not line.endswith(' '):
             commands = self.commands
         else:
             commands = self.cli.get_attributes(self.node_name)
-
         completions = [x for x in commands if x.startswith(line.split(' ')[-1])]
 
         try:
@@ -56,14 +55,14 @@ class CliHandler():
         except IndexError:
             return None
 
-    def command_helptext(self, line):
+    def helptext(self, line):
         """ Return helptext for a certain command.
 
         Returns a helptext.
         """
         return 'Helptext here: ' + line
 
-    def command_parseline(self, line):
+    def parseline(self, line):
         """ Parse a command line.
 
         Return the command together with its arguments.
@@ -74,7 +73,7 @@ class CliHandler():
         if not line:
             return None, None, line
         if line == 'help':
-            return None, None, self.command_helptext(line)
+            return None, None, self.helptext(line)
 
         i, n = 0, len(line)
         identchars = string.ascii_letters + string.digits + '_'
@@ -86,63 +85,51 @@ class CliHandler():
 
         return cmd, arg, line
 
-    def command_verify(self, cmd, args):
-        """ Verify a command.
-
-        Return and error string if the command is invalid.
-        """
-
-        err = []
-        arglist = args.split()[::2]
-
-        for arg in arglist:
-            if arg not in self.cli.get_attributes(cmd):
-                err.append('Invalid argument: {}'.format(arg))
-
-        for arg in self.cli.get_mandatory(cmd):
-            if arg not in arglist:
-                err.append('Mandatory argument {} is missing'.format(arg))
-
-        return err
-
-    def command_post(self, cmd, args):
-        """ Do REST POST call."
-
-        Return error string if fails.
-        """
-
-        return 'Do POST here.'
-
-    def command_builtin(self, command):
+    def builtin_cmd(self, command):
         """ Check if we have a builtin command.
 
         """
+
+        command = command.split(' ')[0]
         if command == 'history':
             for i in range(readline.get_current_history_length()):
                 print(readline.get_history_item(i + 1))
-        if command == 'help' or command == '?':
-            print("Help!")
+        elif command == 'help':
+            for cmd in self.cli.get_commands():
+                print('%10s: %s' % (cmd, self.cli.get_command_description(cmd)))
         return ''
 
-    def command_show(self, command):
+    def is_show(self, command):
+        """ Find out whether we have a show command or not.
+        """
+
         if command.split(' ')[0] == 'show':
             return True
         return False
 
-    def command_no(self, command):
+    def is_no(self, command):
+        """ Find out whether we have a no command or not.
+        """
+
         if command.split(' ')[0] == 'no':
             return True
         return False
 
-    def command_help(self, command):
-        if command.split(' ')[0] == 'help':
+    def is_help(self, command):
+        """ Find out whether we have a help command or not.
+        """
+
+        if 'help' in command:
             return True
         if '?' in command:
             return True
         return False
 
-    def command_valid(self, command):
-        if self.command_show(command) or self.command_no(command):
+    def validate(self, command):
+        """ Find out if this is a valid command or not.
+        """
+
+        if self.is_show(command) or self.is_no(command):
             command = command.split(' ')[1]
         else:
             command = command.split(' ')[0]
@@ -150,37 +137,41 @@ class CliHandler():
             return False
         return True
 
-    def command_strip(self, command):
+    def strip(self, command):
+        """ Strip the command and return arguments.
+        """
+
         return ' '.join(command.split(' ')[1:])
 
-    def command_execute(self, command):
+    def execute(self, command):
         """ Execute commands.
 
         Return an error string if invalid.
         """
+
         if command in self.builtin:
-            return self.command_builtin(command)
-        if not self.command_valid(command):
+            return self.builtin_cmd(command)
+        if not self.validate(command):
             return 'Invalid command: ' + command
-        if self.command_show(command):
-            return Rest.get(self.command_strip(command), self.token)
-        elif self.command_no(command):
-            return Rest.delete(self.command_strip(command), self.token)
-        elif self.command_help(command):
-            return self.command_helptext(command)
+        if self.is_show(command):
+            return Rest.get(self.strip(command), self.token)
+        elif self.is_no(command):
+            return Rest.delete(self.strip(command), self.token)
+        elif self.is_help(command):
+            return self.helptext(command)
         else:
             return Rest.post(command, self.token)
         return 'I have no idea what to do with this command'
 
-    def command_loop(self, completekey='tab'):
+    def loop(self, completekey='tab'):
         """ Main loop """
         self.old_completer = readline.get_completer()
 
-        readline.set_completer(self.command_complete)
+        readline.set_completer(self.complete)
         readline.parse_and_bind(completekey+": complete")
 
         line = input(self.prompt)
-        print(self.command_execute(line))
+        print(self.execute(line))
 
         readline.set_completer(self.old_completer)
         readline.write_history_file('history.txt')
