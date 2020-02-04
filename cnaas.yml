@@ -3,7 +3,7 @@ base_url: 'http://localhost:5000/api/v1.0'
 cli:
   - command:
       name: 'devices'
-      description: 'poo'
+      description: 'Handles devices'
       url: '/devices'
       attributes:
       methods:
@@ -11,7 +11,7 @@ cli:
 
   - command:
       name: 'device'
-      description: 'poo'
+      description: 'Handles a single device'
       url: '/device'
       attributes:
         - name: 'id'
@@ -65,9 +65,19 @@ cli:
         - name: 'get'
 
   - command:
-      name: 'version'
-      description: 'Show version'
-      url: '/system/version'
+      name: 'device_init'
+      description: 'Init device'
+      url: '/device_init'
       attributes:
+        - name: 'id'
+          mandatory: true
+          description: 'Device ID'
+          url_suffix: true
+        - name: 'hostname'
+          mandatory: true
+          description: 'Hostname'
+        - name: 'device_type'
+          mandatory: true
+          description: 'Type of device (ACCESS, DIST, ...)'
       methods:
-        - name: 'get'
+        - name: 'post'
