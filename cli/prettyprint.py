@@ -1,4 +1,6 @@
-import fcntl, termios, struct
+import fcntl
+import termios
+import struct
 
 
 def terminal_size():

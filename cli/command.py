@@ -2,9 +2,9 @@ import os
 import string
 import readline
 
-from prettyprint import terminal_size
-from model import Cli
-from rest import Rest
+from cli.prettyprint import terminal_size
+from cli.model import Cli
+from cli.rest import Rest
 
 
 class CliHandler():

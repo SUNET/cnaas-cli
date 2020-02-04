@@ -1,7 +1,7 @@
 import sys
 import getopt
 
-from command import CliHandler
+from cli.command import CliHandler
 
 
 def usage():

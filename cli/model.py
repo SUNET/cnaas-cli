@@ -1,5 +1,5 @@
 import yaml
-from cli_struct import f_cli
+from cli.cli_struct import f_cli
 
 
 class Cli():

@@ -1,7 +1,7 @@
 import requests
 
-from model import Cli
-from prettyprint import prettyprint
+from cli.model import Cli
+from cli.prettyprint import prettyprint
 
 
 class Rest():
