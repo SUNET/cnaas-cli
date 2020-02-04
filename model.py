@@ -22,9 +22,11 @@ class Cli():
 
     def get_command_description(self, command):
         """ Return descirption of a specific command """
-
-        return [x.command.description for x in self.cli.cli if x.command.name
-                == command][0]
+        try:
+            return [x.command.description for x in self.cli.cli if x.command.name
+                    == command][0]
+        except Exception:
+            return ''
 
     def get_attributes(self, command):
         """ Return attribute names for a command """
