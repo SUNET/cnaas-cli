@@ -8,16 +8,17 @@ from command import CliHandler
 
 
 def usage():
-    print('cli.py -h <hostname> -p <port')
+    print('cli.py -h <hostname> -p <port> -t <token>')
     sys.exit(0)
 
 
 def main(argv):
     hostname = ''
     port = 5000
+    token = ''
 
     try:
-        opts, args = getopt.getopt(argv, 'h:p:')
+        opts, args = getopt.getopt(argv, 'h:p:t:')
     except getopt.GetoptError:
         usage(argv)
     for opt, arg in opts:
@@ -25,10 +26,12 @@ def main(argv):
             hostname = arg
         if opt == '-p':
             port = arg
-    if hostname == '':
+        if opt == '-t':
+            token = arg
+    if hostname == '' or token == '':
         usage()
     try:
-        cli = CliHandler(hostname, port)
+        cli = CliHandler(hostname, port, token=token)
         while True:
             cli.command_loop()
     except KeyboardInterrupt:
