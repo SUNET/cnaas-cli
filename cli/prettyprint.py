@@ -14,7 +14,7 @@ def prettyprint_job(data: dict, command: str) -> str:
         res = data['data'] + ' '
         if 'job_id' in data:
             res += '\nJob ID: ' + str(data['job_id'])
-        return res
+        return res + '\n'
     return None
 
 
@@ -61,9 +61,7 @@ def prettyprint(data: dict, command: str) -> str:
     if command == 'device':
         command = 'devices'
 
-    res = prettyprint_job(data, command)
-
-    if res is not None:
-        return res
-
-    return prettyprint_other(data, command)
+    if 'data' in data and command in data['data']:
+        return prettyprint_other(data, command)
+    if 'job_id' in data:
+        return prettyprint_job(data, command)
