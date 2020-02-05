@@ -1,4 +1,5 @@
 import os
+import sys
 import string
 import readline
 
@@ -30,7 +31,7 @@ class CliHandler():
         self.token = token
         self.prompt = prompt
         self.cli = CliParser(model)
-        self.builtin = ['no', 'show', 'help', 'history']
+        self.builtin = ['no', 'show', 'help', 'history', 'quit']
         self.node_name = ''
         self.commands = self.cli.get_commands()
         self.commands = self.commands + self.builtin
@@ -208,6 +209,9 @@ class CliHandler():
 
         return ' '.join(command.split(' ')[1:])
 
+    def new_line(self, msg: Optional[str] = ''):
+        print(msg)
+
     def execute(self, command: str) -> str:
         """
         Execute commands.
@@ -218,6 +222,11 @@ class CliHandler():
         # Empty command, silently ignore
         if command == '':
             return ''
+
+        # Quit?
+        if command == 'quit':
+            print('Goodbye!')
+            sys.exit(0)
 
         # Valid command?
         if not self.validate(command):
