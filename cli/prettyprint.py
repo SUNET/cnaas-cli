@@ -4,7 +4,7 @@ from cli.terminal import print_hline, terminal_size
 
 forbidden = ['confhash', 'oob_ip', 'infra_ip', 'site_id', 'port']
 job_fields = ['id', 'status', 'start_time', 'finish_time', 'function_name',
-              'scheduled_by']
+              'scheduled_by', 'exception']
 
 
 def prettyprint_job(data: dict, command: str) -> str:
@@ -35,8 +35,16 @@ def prettyprint_jobs(data: dict, command:str) -> str:
 
     for job in data['data']['jobs']:
         for key in job:
+            # Only print certain fields
             if key not in job_fields:
                 continue
+
+            # Don't print the backtrace
+            if key == 'exception' and job['exception'] is not None:
+                print('%20s\t ' % job[key]['args'][0], end='')
+                continue
+
+            # Variable column width
             if key == 'id' or key == 'status':
                 print('%5s\t ' % job[key], end='')
             else:
@@ -89,7 +97,7 @@ def prettyprint(data: dict, command: str) -> str:
 
     if 'data' in data and 'jobs' in data['data']:
         return prettyprint_jobs(data, command)
-    elif 'data' in data and command in data['data']:
-        return prettyprint_other(data, command)
     elif 'job_id' in data:
         return prettyprint_job(data, command)
+    elif 'data' in data and command in data['data']:
+        return prettyprint_other(data, command)
