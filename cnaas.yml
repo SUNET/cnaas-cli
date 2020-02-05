@@ -2,6 +2,24 @@
 base_url: 'http://localhost:5000/api/v1.0'
 cli:
   - command:
+      name: 'device_init'
+      description: 'Init device'
+      url: '/device_init'
+      attributes:
+        - name: 'id'
+          mandatory: true
+          description: 'Device ID'
+          url_suffix: true
+        - name: 'hostname'
+          mandatory: true
+          description: 'Hostname'
+        - name: 'device_type'
+          mandatory: true
+          description: 'Type of device (ACCESS, DIST, ...)'
+      methods:
+        - name: 'post'
+
+  - command:
       name: 'devices'
       description: 'Handles devices'
       url: '/devices'
@@ -15,9 +33,85 @@ cli:
       url: '/device'
       attributes:
         - name: 'id'
-          mandatory: true
+          mandatory: false
           description: 'Device ID'
           url_suffix: true
+        - name: "hostname"
+          mandatory: false
+          description: 'Hostname'
+          url_suffix: false
+        - name: "site_id"
+          mandatory: false
+          description: 'Site ID'
+          url_suffix: false
+        - name: "description"
+          mandatory: false
+          description: 'Description'
+          url_suffix: false
+        - name: "management_ip"
+          mandatory: false
+          description: 'Management IP'
+          url_suffix: false
+        - name: "dhcp_ip"
+          mandatory: false
+          description: 'DHCP IP'
+          url_suffix: false
+        - name: "infra_ip"
+          mandatory: false
+          description: 'Infra IP'
+          url_suffix: false
+        - name: "oob_ip"
+          mandatory: false
+          description: 'OOB IP'
+          url_suffix: false
+        - name: "serial"
+          mandatory: false
+          description: 'Serial #'
+          url_suffix: false
+        - name: "ztp_mac"
+          mandatory: false
+          description: 'MAC adress'
+          url_suffix: false
+        - name: "platform"
+          mandatory: false
+          description: 'Platform'
+          url_suffix: false
+        - name: "vendor"
+          mandatory: false
+          description: 'Vendor'
+          url_suffix: false
+        - name: "model"
+          mandatory: false
+          description: 'Model'
+          url_suffix: false
+        - name: "os_version"
+          mandatory: false
+          description: 'Version'
+          url_suffix: false
+        - name: "synchronized"
+          mandatory: false
+          description: 'Synchronized'
+          url_suffix: false
+        - name: "state"
+          mandatory: false
+          description: 'Device state'
+          url_suffix: false
+        - name: "device_type"
+          mandatory: false
+          description: 'Type'
+          url_suffix: false
+        - name: "confhash"
+          mandatory: false
+          description: 'Config hash'
+          url_suffix: false
+        - name: "last_seen"
+          mandatory: false
+          description: 'Seen'
+          url_suffix: false
+        - name: "port"
+          mandatory: false
+          description: 'Port'
+          url_suffix: false
       methods:
         - name: "get"
 
@@ -63,21 +157,3 @@ cli:
           url_suffix: true
       methods:
         - name: 'get'
-
-  - command:
-      name: 'device_init'
-      description: 'Init device'
-      url: '/device_init'
-      attributes:
-        - name: 'id'
-          mandatory: true
-          description: 'Device ID'
-          url_suffix: true
-        - name: 'hostname'
-          mandatory: true
-          description: 'Hostname'
-        - name: 'device_type'
-          mandatory: true
-          description: 'Type of device (ACCESS, DIST, ...)'
-      methods:
-        - name: 'post'
