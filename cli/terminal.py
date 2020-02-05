@@ -2,6 +2,8 @@ import fcntl
 import termios
 import struct
 
+from typing import Optional
+
 
 def print_hline(character: Optional[str] = '-',
                 width: Optional[int] = 0) -> None:
