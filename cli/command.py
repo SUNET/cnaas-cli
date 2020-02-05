@@ -2,7 +2,7 @@ import os
 import string
 import readline
 
-from cli.prettyprint import terminal_size
+from cli.terminal import print_hline
 from cli.parser import CliParser
 from cli.rest import Rest
 from typing import Optional, List
@@ -90,13 +90,12 @@ class CliHandler():
         if attributes is None:
             return ''
 
-        tty_w, tty_h = terminal_size()
-        print('-' * tty_w)
+        print_hline()
 
         for attribute in attributes:
-            print('\t%s:%20s' % (attribute,
-                                 self.cli.get_description(command, attribute)))
-
+            description = self.cli.get_attribute_description(command,
+                                                             attribute)
+            print('\t%s:%20s' % (attribute, description))
         return ''
 
     def parseline(self, line: str) -> tuple:
@@ -167,30 +166,34 @@ class CliHandler():
             return True
         return False
 
-    def validate(self, command: str) -> bool:
+    def validate(self, line: str) -> bool:
         """
         Find out if this is a valid command or not.
         """
 
-        command = command.rstrip()
-        if len(command.split(' ')) == 1:
+        line = line.rstrip()
+        if len(line.split(' ')) == 1:
             attributes = None
+            command = line
         else:
-            if command.split(' ')[0] in self.builtin:
-                attributes = command.split(' ')[2:]
-                command = command.split(' ')[1]
+            if line.split(' ')[0] in self.builtin:
+                return True
             else:
-                attributes = command.split(' ')[1:]
-                command = command.split(' ')[0]
+                attributes = line.split(' ')[1:]
+                command = line.split(' ')[0]
+
         if attributes is not None and len(attributes) % 2 != 0:
             return False
+
         if command not in self.commands:
             return False
+
         spec_attributes = self.cli.get_attributes(command)
         if spec_attributes is None:
             return True
         if attributes is None and spec_attributes is not None:
             return False
+
         for attr in spec_attributes:
             if attr not in attributes:
                 return False
@@ -213,7 +216,7 @@ class CliHandler():
         if command in self.builtin:
             return self.builtin_cmd(command)
         if not self.validate(command):
-            return 'Invalid command: ' + command
+            return 'Validation failed. Invalid command: ' + command
         if self.is_show(command):
             return Rest.get(self.strip(command), self.token)
         elif self.is_no(command):

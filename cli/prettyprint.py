@@ -1,42 +1,32 @@
-import fcntl
-import termios
-import struct
-
 from typing import Optional, List
+from cli.terminal import print_hline, terminal_size
 
 
-def terminal_size() -> tuple:
+forbidden = ['confhash', 'oob_ip', 'infra_ip', 'site_id', 'port']
+
+
+def preettyprint_jobs(data: dict) -> str:
     """
-    Get terminal width and height
+    Prettyprinter for jobs
     """
-
-    packed_struct = struct.pack('HHHH', 0, 0, 0, 0)
-    h, w, hp, wp = struct.unpack('HHHH', fcntl.ioctl(0, termios.TIOCGWINSZ,
-                                                     packed_struct))
-    return w, h
-
-
-def prettyprint(data: dict, command: str) -> str:
-    """
-    Prettyprint the JSON data we get back from the API
-    """
-
-    headers = []
-    values = ''
-    header_formatted = ''
-    forbidden = ['confhash', 'oob_ip', 'infra_ip', 'site_id', 'port']
-
-    # A few commands need a littel special treatment
-    if command == 'job':
-        command = 'jobs'
-    if command == 'device':
-        command = 'devices'
 
     if type(data['data']) is str:
         res = data['data'] + ' '
         if 'job_id' in data:
             res += '\nJob ID: ' + str(data['job_id'])
         return res
+    return ''
+
+
+def prettyprint_other(data: dict, command: str) -> str:
+    """
+    Prettyprinter for everything else
+    """
+
+    headers = []
+    values = ''
+    header_formatted = ''
+
     if command in data['data']:
         content = data['data'][command]
     else:
@@ -55,6 +45,21 @@ def prettyprint(data: dict, command: str) -> str:
 
     values = values.replace('\\n', '\n')
 
-    (tty_width, tty_height) = terminal_size()
+    width, height = terminal_size()
 
-    return header_formatted + '\n' + '-' * tty_width + '\n' + values
+    return header_formatted + '\n' + '-' * width + '\n' + values
+
+
+def prettyprint(data: dict, command: str) -> str:
+    """
+    Prettyprint the JSON data we get back from the API
+    """
+
+    # A few commands need a littel special treatment
+    if command == 'job':
+        command = 'jobs'
+        return preettyprint_jobs(data)
+    if command == 'device':
+        command = 'devices'
+
+    return prettyprint_other(data, command)

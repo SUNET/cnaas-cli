@@ -70,7 +70,7 @@ class CliParser():
                     mandatory.append(attr.name)
         return mandatory
 
-    def get_description(self, command: str, attribute: str) -> str:
+    def get_attribute_description(self, command: str, attribute: str) -> str:
         """
         Return descirption for an attribute
         """
