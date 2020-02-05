@@ -2,18 +2,31 @@ import fcntl
 import termios
 import struct
 
+from typing import Optional, List
 
-def terminal_size():
-    h, w, hp, wp = struct.unpack('HHHH', fcntl.ioctl(0, termios.TIOCGWINSZ, struct.pack('HHHH', 0, 0, 0, 0)))
+
+def terminal_size() -> tuple:
+    """
+    Get terminal width and height
+    """
+
+    packed_struct = struct.pack('HHHH', 0, 0, 0, 0)
+    h, w, hp, wp = struct.unpack('HHHH', fcntl.ioctl(0, termios.TIOCGWINSZ,
+                                                     packed_struct))
     return w, h
 
 
-def prettyprint(data, command):
+def prettyprint(data: dict, command: str) -> str:
+    """
+    Prettyprint the JSON data we get back from the API
+    """
+
     headers = []
     values = ''
     header_formatted = ''
     forbidden = ['confhash', 'oob_ip', 'infra_ip', 'site_id', 'port']
 
+    # A few commands need a littel special treatment
     if command == 'job':
         command = 'jobs'
     if command == 'device':

@@ -5,11 +5,24 @@ import readline
 from cli.prettyprint import terminal_size
 from cli.parser import CliParser
 from cli.rest import Rest
+from typing import Optional, List
 
 
 class CliHandler():
-    def __init__(self, host='localhost', port=5000, prompt='CNaaS# ',
-                 model='cnaas.yml', token=None):
+    def __init__(self, host: Optional[str] = 'localhost',
+                 port: Optional[int] = 5000,
+                 prompt: Optional[str] = 'CNaaS# ',
+                 model: Optional[str] = 'cnaas.yml',
+                 token: Optional[str] = None) -> None:
+        """
+        Constructur.
+
+        Init CliParser and do some other stuff.
+
+        Returns:
+
+        """
+
         if os.path.isfile('history.txt'):
             readline.read_history_file('history.txt')
 
@@ -21,12 +34,14 @@ class CliHandler():
         self.commands = self.cli.get_commands()
         self.commands = self.commands + self.builtin
 
-    def read_line(self):
-        """Read a command from standard in.
+    def read_line(self) -> tuple:
+        """
+        Read a command from standard in.
 
         Returns the whole line and the last word.
 
         """
+
         line = readline.get_line_buffer().lstrip()
 
         if line.startswith('no') or line.startswith('show'):
@@ -34,12 +49,14 @@ class CliHandler():
 
         return line, line.split(' ')[-1]
 
-    def complete(self, text, state):
-        """ Get possible commands based on what is already typed in.
+    def complete(self, text: str, state: str) -> list:
+        """
+        Get possible commands based on what is already typed in.
 
         Returns a possible completion.
 
         """
+
         line, last = self.read_line()
         commandlen = len(line.split(' '))
 
@@ -58,8 +75,9 @@ class CliHandler():
         except IndexError:
             return None
 
-    def helptext(self, line):
-        """ Return helptext for a certain command.
+    def helptext(self, line: str) -> str:
+        """
+        Return helptext for a certain command.
 
         Returns a helptext.
         """
@@ -81,7 +99,7 @@ class CliHandler():
 
         return ''
 
-    def parseline(self, line):
+    def parseline(self, line: str) -> tuple:
         """ Parse a command line.
 
         Return the command together with its arguments.
@@ -104,8 +122,9 @@ class CliHandler():
 
         return cmd, arg, line
 
-    def builtin_cmd(self, command):
-        """ Check if we have a builtin command.
+    def builtin_cmd(self, command: str) -> str:
+        """
+        Check if we have a builtin command.
 
         """
 
@@ -119,24 +138,27 @@ class CliHandler():
                 print('%20s: %s' % (cmd, description))
         return ''
 
-    def is_show(self, command):
-        """ Find out whether we have a show command or not.
+    def is_show(self, command: str) -> bool:
+        """
+        Find out whether we have a show command or not.
         """
 
         if command.split(' ')[0] == 'show':
             return True
         return False
 
-    def is_no(self, command):
-        """ Find out whether we have a no command or not.
+    def is_no(self, command: str) -> bool:
+        """
+        Find out whether we have a no command or not.
         """
 
         if command.split(' ')[0] == 'no':
             return True
         return False
 
-    def is_help(self, command):
-        """ Find out whether we have a help command or not.
+    def is_help(self, command: str) -> bool:
+        """
+        Find out whether we have a help command or not.
         """
 
         if 'help' in command:
@@ -145,16 +167,21 @@ class CliHandler():
             return True
         return False
 
-    def validate(self, command):
-        """ Find out if this is a valid command or not.
+    def validate(self, command: str) -> bool:
+        """
+        Find out if this is a valid command or not.
         """
 
         command = command.rstrip()
         if len(command.split(' ')) == 1:
             attributes = None
         else:
-            attributes = command.split(' ')[1:]
-            command = command.split(' ')[0]
+            if command.split(' ')[0] in self.builtin:
+                attributes = command.split(' ')[2:]
+                command = command.split(' ')[1]
+            else:
+                attributes = command.split(' ')[1:]
+                command = command.split(' ')[0]
         if attributes is not None and len(attributes) % 2 != 0:
             return False
         if command not in self.commands:
@@ -169,14 +196,16 @@ class CliHandler():
                 return False
         return True
 
-    def strip(self, command):
-        """ Strip the command and return arguments.
+    def strip(self, command: str) -> str:
+        """
+        Strip the command and return arguments.
         """
 
         return ' '.join(command.split(' ')[1:])
 
-    def execute(self, command):
-        """ Execute commands.
+    def execute(self, command: str) -> str:
+        """
+        Execute commands.
 
         Return an error string if invalid.
         """
@@ -195,8 +224,10 @@ class CliHandler():
             return Rest.post(command, self.token)
         return 'I have no idea what to do with this command'
 
-    def loop(self, completekey='tab'):
-        """ Main loop """
+    def loop(self, completekey: Optional[str] = 'tab') -> None:
+        """
+        Main loop
+        """
         self.old_completer = readline.get_completer()
 
         readline.set_completer(self.complete)

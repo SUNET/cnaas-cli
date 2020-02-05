@@ -1,15 +1,18 @@
 import requests
 
+from typing import Optional, List
 from cli.parser import CliParser
 from cli.prettyprint import prettyprint
+from typing import Optional, List
 
 
 class Rest():
     cli = CliParser('cnaas.yml')
 
     @classmethod
-    def parse_args(cls, command):
-        """Parse arguments from command. Strip the first word, which is the
+    def parse_args(cls, command: str) -> tuple:
+        """
+        Parse arguments from command. Strip the first word, which is the
         command itself and then build a dict with arguments.
 
         """
@@ -39,8 +42,11 @@ class Rest():
         return (url, new_args)
 
     @classmethod
-    def get(cls, command, token):
-        """ GET method, call NMS with the right URL and arguments. """
+    def get(cls, command: str, token: str) -> str:
+        """
+        GET method, call NMS with the right URL and arguments
+
+        """
 
         (url, args) = cls.parse_args(command)
         command = command.split(' ')[0]
@@ -56,8 +62,11 @@ class Rest():
         return prettyprint(res.json(), command)
 
     @classmethod
-    def post(cls, command, token):
-        """ POST method, call NMS with the right URL and arguments. """
+    def post(cls, command: str, token: str) -> str:
+        """
+        POST method, call NMS with the right URL and arguments
+
+        """
 
         (url, args) = cls.parse_args(command)
         command = command.split(' ')[0]
@@ -73,7 +82,10 @@ class Rest():
         return prettyprint(res.json(), command)
 
     @classmethod
-    def delete(cls, command, token):
-        """ DELETE method, call NMS with the right URL and arguments. """
+    def delete(cls, command: str, token: str) -> str:
+        """
+        DELETE method, call NMS with the right URL and arguments
+
+        """
 
         return "test string for delete"
