@@ -157,3 +157,87 @@ cli:
           url_suffix: true
       methods:
         - name: 'get'
+
+  - command:
+      name: 'linknets'
+      description: 'Linknets'
+      url: '/linknets'
+      attributes:
+        - name: 'id'
+          mandatory: false
+          description: 'Job ID'
+        - name: "ipv4_network"
+          mandatory: false
+          description: 'IPv4 Network'
+        - name: "device_a_id"
+          mandatory: false
+          description: 'Device A ID'
+        - name: "device_a_ip"
+          mandatory: false
+          description: 'Device A IP'
+        - name: "device_a_port"
+          mandatory: false
+          description: 'Device A port'
+        - name: "device_b_id"
+          mandatory: false
+          description: 'Device B ID'
+        - name: "device_b_ip"
+          mandatory: false
+          description: 'Device B IP'
+        - name: "device_b_port"
+          mandatory: false
+          description: 'Device B port'
+        - name: "site_id"
+          mandatory: false
+          description: 'Site ID'
+        - name: "description"
+          mandatory: false
+          description: 'Description'
+      methods:
+        - name: 'get'
+        - name: 'post'
+
+  - command:
+      name: 'mgmtdomains'
+      description: 'Management domains'
+      url: '/mgmtdomains'
+      attributes:
+        - name: 'id'
+          mandatory: false
+          description: 'Job ID'
+        - name: "ipv4_gw"
+          mandatory: false
+          description: 'IPv4 gateway'
+        - name: "device_a_id"
+          mandatory: false
+          description: 'Device A ID'
+        - name: "device_a_ip"
+          mandatory: false
+          description: 'Device A IP'
+          mandatory: false
+          description: 'Device B ID'
+        - name: "device_b_ip"
+          mandatory: false
+          description: 'Device B IP'
+        - name: "site_id"
+          mandatory: false
+          description: 'Site ID'
+        - name: "description"
+          mandatory: false
+          description: 'Description'
+        - name: "vlan"
+          mandatory: false
+          description: 'VLAN'
+        - name: "esi_mac"
+          mandatory: false
+          description: 'ESI MAC'
+        - name: "device_a"
+          mandatory: false
+          description: 'Device A hostname'
+        - name: "device_b"
+          mandatory: false
+          description: 'Device B hostname'
+
+      methods:
+        - name: 'get'
+        - name: 'post'
