@@ -52,7 +52,11 @@ class Rest():
 
         """
 
-        (url, args) = cls.parse_args(command, url)
+        if url != '':
+            (url, args) = cls.parse_args(command, url)
+        else:
+            (url, args) = cls.parse_args(command, cls.cli.get_base_url())
+
         command = command.split(' ')[0]
         headers = {'Authorization': 'Bearer ' + token}
 
@@ -66,13 +70,17 @@ class Rest():
         return prettyprint(res.json(), command)
 
     @classmethod
-    def post(cls, command: str, token: str) -> str:
+    def post(cls, command: str, token: str, url: Optional[str] = '') -> str:
         """
         POST method, call NMS with the right URL and arguments
 
         """
 
-        (url, args) = cls.parse_args(command, url)
+        if url != '':
+            (url, args) = cls.parse_args(command, url)
+        else:
+            (url, args) = cls.parse_args(command, cls.cli.get_base_url())
+
         command = command.split(' ')[0]
         headers = {'Authorization': 'Bearer ' + token}
 

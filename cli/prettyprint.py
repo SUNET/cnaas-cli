@@ -5,7 +5,7 @@ from cli.terminal import print_hline, terminal_size
 forbidden = ['confhash', 'oob_ip', 'infra_ip', 'site_id', 'port']
 
 
-def preettyprint_jobs(data: dict) -> str:
+def prettyprint_job(data: dict, command: str) -> str:
     """
     Prettyprinter for jobs
     """
@@ -15,7 +15,7 @@ def preettyprint_jobs(data: dict) -> str:
         if 'job_id' in data:
             res += '\nJob ID: ' + str(data['job_id'])
         return res
-    return ''
+    return None
 
 
 def prettyprint_other(data: dict, command: str) -> str:
@@ -55,11 +55,15 @@ def prettyprint(data: dict, command: str) -> str:
     Prettyprint the JSON data we get back from the API
     """
 
-    # A few commands need a littel special treatment
+    # A few commands need a little special treatment
     if command == 'job':
         command = 'jobs'
-        return preettyprint_jobs(data)
     if command == 'device':
         command = 'devices'
+
+    res = prettyprint_job(data, command)
+
+    if res is not None:
+        return res
 
     return prettyprint_other(data, command)
