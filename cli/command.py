@@ -166,8 +166,6 @@ class CliHandler():
 
         if 'help' in command:
             return True
-        if '?' in command:
-            return True
         return False
 
     def validate(self, line: str) -> bool:
