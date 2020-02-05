@@ -2,11 +2,11 @@
 
 CLI for CNaaS NMS.
 
-Generates an interactive CLI from a YANG specification.
+Generates an interactive CLI from a YAML specification.
 
 Kristofer Hallin, SUNET 2020.
 
 
 ## Usage example
 
-python3 cli.py -u https://localhost:1443/api/v1.0 -t <<JWT token>>
+python3 cli.py -u https://localhost:1443/api/v1.0 -t JWT_token_here
