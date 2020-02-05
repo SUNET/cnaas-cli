@@ -64,7 +64,7 @@ class Rest():
             res = requests.get(url, headers=headers, json=args, verify=False)
 
             if res.status_code != 200:
-                return 'Could not connect to NMS on ' + url
+                return 'Could execute command, missing arguments?\n'
         except Exception as e:
             return 'GET failed: ' + str(e)
         return prettyprint(res.json(), command)

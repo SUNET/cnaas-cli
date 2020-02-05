@@ -100,7 +100,7 @@ class CliHandler():
         for attribute in attributes:
             description = self.cli.get_attribute_description(command,
                                                              attribute)
-            print('\t%s:%20s' % (attribute, description))
+            print('    %20s:\t%s' % (attribute, description))
         return ''
 
     def parseline(self, line: str) -> tuple:
@@ -186,19 +186,24 @@ class CliHandler():
                 command = line.split(' ')[0]
 
         if attributes is not None and len(attributes) % 2 != 0:
+            print('Missing attribute values')
             return False
 
         if command not in self.commands:
+            print('Command do not exist')
             return False
 
         spec_attributes = self.cli.get_attributes(command)
         if spec_attributes is None:
             return True
         if attributes is None and spec_attributes is not None:
+            print('Missing attributes')
             return False
 
         for attr in spec_attributes:
-            if attr not in attributes:
+            if attr not in attributes and self.cli.get_mandatory(command,
+                                                                 attr):
+                print('Missing attribute: ' + attr)
                 return False
         return True
 

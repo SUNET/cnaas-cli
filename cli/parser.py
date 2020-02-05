@@ -56,7 +56,7 @@ class CliParser():
                 cmd_attrs.append(attr.name)
         return cmd_attrs
 
-    def get_mandatory(self, command: str) -> list:
+    def get_mandatory(self, command: str, attribute: str) -> list:
         """
         Return whether an attribute is mandatory or not
         """
@@ -66,9 +66,13 @@ class CliParser():
             if cmd.command.name != command:
                 continue
             for attr in cmd.command.attributes:
+                if attr != attribute:
+                    continue
                 if attr.mandatory:
-                    mandatory.append(attr.name)
-        return mandatory
+                    return True
+                else:
+                    return False
+        return None
 
     def get_attribute_description(self, command: str, attribute: str) -> str:
         """

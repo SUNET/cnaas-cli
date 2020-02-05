@@ -2,7 +2,8 @@ from typing import Optional, List
 from cli.terminal import print_hline, terminal_size
 
 
-forbidden = ['confhash', 'oob_ip', 'infra_ip', 'site_id', 'port']
+forbidden = ['confhash', 'oob_ip', 'infra_ip', 'site_id', 'port', 'dhcp_ip',
+             'ztp_mac', 'platform']
 job_fields = ['id', 'status', 'start_time', 'finish_time', 'function_name',
               'scheduled_by', 'exception']
 
