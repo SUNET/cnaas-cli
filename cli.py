@@ -5,7 +5,7 @@ from cli.command import CliHandler
 from signal import signal, SIGINT
 
 
-def handler(signal_received, frame):
+def handler_sigint(signal_received, frame):
     pass
 
 
@@ -29,7 +29,7 @@ def main(argv):
    `._____.'  '--'    '--' '.(_,_).'  '.(_,_).'   `-...-'
 
 """
-    signal(SIGINT, handler)
+    signal(SIGINT, handler_sigint)
 
     try:
         opts, args = getopt.getopt(argv, 'u:t:')
@@ -48,6 +48,9 @@ def main(argv):
             cli.loop()
     except KeyboardInterrupt:
         cli.new_line(str(e))
+    except EOFError:
+        print('\nGoodbye!')
+        sys.exit(0)
 
 
 if __name__ == '__main__':
