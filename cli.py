@@ -2,6 +2,11 @@ import sys
 import getopt
 
 from cli.command import CliHandler
+from signal import signal, SIGINT
+
+
+def handler(signal_received, frame):
+    pass
 
 
 def usage():
@@ -24,6 +29,7 @@ def main(argv):
    `._____.'  '--'    '--' '.(_,_).'  '.(_,_).'   `-...-'
 
 """
+    signal(SIGINT, handler)
 
     try:
         opts, args = getopt.getopt(argv, 'u:t:')
@@ -41,8 +47,7 @@ def main(argv):
         while True:
             cli.loop()
     except KeyboardInterrupt:
-        print('\nSession closed, good bye!')
-        sys.exit(0)
+        cli.new_line(str(e))
 
 
 if __name__ == '__main__':
