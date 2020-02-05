@@ -217,12 +217,14 @@ class CliHandler():
         Return an error string if invalid.
         """
 
+        # Empty command, silently ignore
         if command == '':
             return ''
-        if command in self.builtin:
-            return self.builtin_cmd(command)
+
+        # Valid command?
         if not self.validate(command):
             return 'Validation failed. Invalid command: ' + command
+
         if self.is_show(command):
             return Rest.get(self.strip(command), self.token, url=self.url)
         elif self.is_no(command):
