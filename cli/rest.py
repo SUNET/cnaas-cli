@@ -10,7 +10,7 @@ class Rest():
     cli = CliParser('cnaas.yml')
 
     @classmethod
-    def parse_args(cls, command: str) -> tuple:
+    def parse_args(cls, command: str, url: Optional[str] = '') -> tuple:
         """
         Parse arguments from command. Strip the first word, which is the
         command itself and then build a dict with arguments.
@@ -19,7 +19,11 @@ class Rest():
 
         args = command.split(' ')[1:]
         command = command.split(' ')[0]
-        url = cls.cli.get_base_url() + cls.cli.get_url(command)
+
+        if url == '':
+            url = cls.cli.get_base_url() + cls.cli.get_url(command)
+        else:
+            url = url + cls.cli.get_url(command)
 
         # Make a dict of arguments and values
         args = dict(zip(args[::2], args[1::2]))
@@ -42,13 +46,13 @@ class Rest():
         return (url, new_args)
 
     @classmethod
-    def get(cls, command: str, token: str) -> str:
+    def get(cls, command: str, token: str, url: Optional[str] = '') -> str:
         """
         GET method, call NMS with the right URL and arguments
 
         """
 
-        (url, args) = cls.parse_args(command)
+        (url, args) = cls.parse_args(command, url)
         command = command.split(' ')[0]
         headers = {'Authorization': 'Bearer ' + token}
 
@@ -68,7 +72,7 @@ class Rest():
 
         """
 
-        (url, args) = cls.parse_args(command)
+        (url, args) = cls.parse_args(command, url)
         command = command.split(' ')[0]
         headers = {'Authorization': 'Bearer ' + token}
 

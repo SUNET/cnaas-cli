@@ -9,11 +9,11 @@ from typing import Optional, List
 
 
 class CliHandler():
-    def __init__(self, host: Optional[str] = 'localhost',
-                 port: Optional[int] = 5000,
+    def __init__(self, url: Optional[str] = '',
                  prompt: Optional[str] = 'CNaaS# ',
                  model: Optional[str] = 'cnaas.yml',
-                 token: Optional[str] = None) -> None:
+                 token: Optional[str] = None,
+                 banner: Optional[str] = '') -> None:
         """
         Constructur.
 
@@ -26,6 +26,7 @@ class CliHandler():
         if os.path.isfile('history.txt'):
             readline.read_history_file('history.txt')
 
+        self.url = url
         self.token = token
         self.prompt = prompt
         self.cli = CliParser(model)
@@ -33,6 +34,9 @@ class CliHandler():
         self.node_name = ''
         self.commands = self.cli.get_commands()
         self.commands = self.commands + self.builtin
+
+        if banner != '':
+            print(banner)
 
     def read_line(self) -> tuple:
         """
@@ -218,13 +222,13 @@ class CliHandler():
         if not self.validate(command):
             return 'Validation failed. Invalid command: ' + command
         if self.is_show(command):
-            return Rest.get(self.strip(command), self.token)
+            return Rest.get(self.strip(command), self.token, url=self.url)
         elif self.is_no(command):
             return Rest.delete(self.strip(command), self.token)
         elif self.is_help(command):
             return self.helptext(command)
         else:
-            return Rest.post(command, self.token)
+            return Rest.post(command, self.token, url=self.url)
         return 'I have no idea what to do with this command'
 
     def loop(self, completekey: Optional[str] = 'tab') -> None:
