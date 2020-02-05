@@ -6,11 +6,13 @@ from typing import Optional
 
 
 def print_hline(character: Optional[str] = '-',
+                newline: Optional[bool] = False,
                 width: Optional[int] = 0) -> None:
     """
     Print horizontal line
     """
-
+    if newline:
+        print('')
     if width == 0:
         width, height = terminal_size()
     print(character * width)
