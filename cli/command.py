@@ -223,7 +223,7 @@ class CliHandler():
 
         # Valid command?
         if not self.validate(command):
-            return 'Validation failed. Invalid command: ' + command
+            return 'Invalid command: %s\n' % command
 
         if self.is_show(command):
             return Rest.get(self.strip(command), self.token, url=self.url)
