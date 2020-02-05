@@ -217,6 +217,8 @@ class CliHandler():
         Return an error string if invalid.
         """
 
+        if command == '':
+            return ''
         if command in self.builtin:
             return self.builtin_cmd(command)
         if not self.validate(command):
@@ -241,7 +243,7 @@ class CliHandler():
         readline.parse_and_bind(completekey+": complete")
 
         line = input(self.prompt)
-        print(self.execute(line))
+        print(self.execute(line), end='')
 
         readline.set_completer(self.old_completer)
         readline.write_history_file('history.txt')
