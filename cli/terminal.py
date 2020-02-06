@@ -11,11 +11,18 @@ def print_hline(character: Optional[str] = '-',
     """
     Print horizontal line
     """
+
+    print(get_hline(character, newline, width))
+
+
+def get_hline(character: Optional[str] = '-',
+              newline: Optional[bool] = False,
+              width: Optional[int] = 0) -> None:
     if newline:
         print('')
     if width == 0:
         width, height = terminal_size()
-    print(character * width)
+    return character * width
 
 
 def terminal_size() -> tuple:

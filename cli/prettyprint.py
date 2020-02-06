@@ -1,5 +1,5 @@
 from typing import Optional, List
-from cli.terminal import print_hline, terminal_size
+from cli.terminal import get_hline, terminal_size, print_hline
 
 
 forbidden = ['confhash', 'oob_ip', 'infra_ip', 'site_id', 'port', 'dhcp_ip',
@@ -14,10 +14,10 @@ def prettyprint_job(data: dict, command: str) -> str:
     """
 
     if type(data['data']) is str:
-        res = data['data'] + ' '
+        res = '  ' + data['data'] + ' '
         if 'job_id' in data:
-            res += '\nJob ID: ' + str(data['job_id'])
-        return res + '\n'
+            res += '\n  Job ID: ' + str(data['job_id'])
+        return res + '\n\n'
     return None
 
 
@@ -26,13 +26,15 @@ def prettyprint_jobs(data: dict, command:str) -> str:
     Prettyprinter for jobs output
     """
 
+    output = ''
+
     for field in job_fields:
         if field == 'id' or field == 'status':
-            print('%5s\t| ' % field, end='')
+            output += ('%5s\t| ' % field)
         else:
-            print('%25s\t| ' % field, end='')
+            output += '%25s\t| ' % field
 
-    print_hline(newline=True)
+    output += get_hline(newline=True)
 
     for job in data['data']['jobs']:
         for key in job:
@@ -42,16 +44,16 @@ def prettyprint_jobs(data: dict, command:str) -> str:
 
             # Don't print the backtrace
             if key == 'exception' and job['exception'] is not None:
-                print('%20s\t ' % job[key]['args'][0], end='')
+                output += '%20s\t ' % job[key]['args'][0]
                 continue
 
             # Variable column width
             if key == 'id' or key == 'status':
-                print('%5s\t ' % job[key], end='')
+                output += '%5s\t ' % job[key]
             else:
-                print('%25s\t ' % job[key], end='')
-        print('')
-    return ''
+                output += '%25s\t ' % job[key]
+        output += '\n'
+    return output
 
 
 def prettyprint_command(data: dict, command: str) -> str:
@@ -59,6 +61,7 @@ def prettyprint_command(data: dict, command: str) -> str:
     Prettyprinter for commands
     """
 
+    output = ''
     headers = []
     values = ''
     header_formatted = ''
@@ -86,7 +89,7 @@ def prettyprint_command(data: dict, command: str) -> str:
         print(data)
         return 'Failed to parse output\n'
 
-    return header_formatted + '\n' + '-' * width + '\n' + values
+    return header_formatted + '\n' + '-' * width + '\n' + values + '\n'
 
 
 def prettyprint_other(data: dict) -> str:
@@ -95,28 +98,53 @@ def prettyprint_other(data: dict) -> str:
     """
 
     if 'data' in data and isinstance(data['data'], str):
-        return data['data']
+        return '  ' + data['data'] + '\n'
     return ''
 
 
 def prettyprint_groups(data: dict, name: str) -> str:
+
+    output = ''
+
     for item in data['data'][name]:
-        print('  ' + item + ':')
+        output += '  ' + item + ':\n'
         for line in data['data'][name][item]:
-            print('    ' + line)
-        print('')
+            output += '    ' + line + '\n'
+        output += '\n'
+    return output
 
 
 def prettyprint_version(data: dict, name: str) -> str:
+
+    output = ''
+
     for item in data['data']:
-        print('  ' + item + ':\t' + data['data'][item])
-    return '\n'
+        output += '  ' + item + ':\t' + data['data'][item] + '\n'
+    output += '\n'
+    return output
 
 
-def prettyprint(data: dict, command: str) -> str:
+def prettyprint_modifier(output, modifier):
+    modified_output = ''
+
+    command = modifier.lstrip().rstrip().split(' ')[0]
+    args = ' '.join(modifier.lstrip().rstrip().split(' ')[1:])
+
+    if command.rstrip() == 'grep':
+        for line in output.split('\n'):
+            if args in line:
+                modified_output += line + '\n'
+    modified_output += '\n'
+
+    return modified_output
+
+
+def prettyprint(data: dict, command: str, modifier: Optional[str] = '') -> str:
     """
     Prettyprint the JSON data we get back from the API
     """
+
+    output = ''
 
     # A few commands need a little special treatment
     if command == 'job':
@@ -125,14 +153,19 @@ def prettyprint(data: dict, command: str) -> str:
         command = 'devices'
 
     if 'data' in data and 'jobs' in data['data']:
-        return prettyprint_jobs(data, command)
+        output = prettyprint_jobs(data, command)
     elif 'job_id' in data:
-        return prettyprint_job(data, command)
+        output = prettyprint_job(data, command)
     elif 'groups' in data['data']:
-        return prettyprint_groups(data, 'groups')
+        output = prettyprint_groups(data, 'groups')
     elif 'version' in data['data']:
-        return prettyprint_version(data, 'version')
+        output = prettyprint_version(data, 'version')
     elif 'data' in data and command in data['data']:
-        return prettyprint_command(data, command)
+        output = prettyprint_command(data, command)
     else:
-        return prettyprint_other(data)
+        output = prettyprint_other(data)
+
+    if modifier != '':
+        output = prettyprint_modifier(output, modifier)
+
+    return output

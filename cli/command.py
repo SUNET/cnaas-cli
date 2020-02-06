@@ -32,6 +32,7 @@ class CliHandler():
         self.prompt = prompt
         self.cli = CliParser(model)
         self.builtin = ['no', 'show', 'help', 'history', 'quit']
+        self.modifiers = ['grep']
         self.node_name = ''
         self.commands = self.cli.get_commands()
         self.commands = self.commands + self.builtin
@@ -69,10 +70,10 @@ class CliHandler():
 
         if commandlen < 2 and not line.endswith(' '):
             commands = self.commands
-        elif line.startswith('help '):
-            commands = self.commands
         else:
             commands = self.cli.get_attributes(self.node_name)
+            commands += self.modifiers
+
         completions = [x for x in commands if x.startswith(line.split(' ')[-1])]
 
         try:
@@ -186,10 +187,12 @@ class CliHandler():
             if line.split(' ')[0] in self.builtin:
                 return True
             else:
-                attributes = line.split(' ')[1:]
+                attributes = line.rstrip().split(' ')[1:]
                 command = line.split(' ')[0]
 
-        if attributes is not None and len(attributes) % 2 != 0:
+        attributes_len = len(attributes)
+
+        if attributes is not None and attributes_len % 2 != 0:
             print('Missing attribute values')
             return False
 
@@ -231,7 +234,12 @@ class CliHandler():
         Return an error string if invalid.
         """
 
-        line = line.lstrip().rstrip()
+        modifier = ''
+
+        if '|' in line:
+            modifier = line.split('|')[-1]
+
+        line = line.split('|')[0].lstrip().rstrip()
         command = line.split(' ')[0]
 
         # Empty command, silently ignore
@@ -251,15 +259,17 @@ class CliHandler():
             return 'Invalid command: %s\n' % line
 
         if self.is_show(line):
-            return Rest.get(self.strip(line), self.token, url=self.url)
+            return Rest.get(self.strip(line), self.token, url=self.url,
+                            modifier=modifier)
         elif self.is_no(line):
-            return Rest.delete(self.strip(line), self.token)
+            return Rest.delete(self.strip(line), self.token, modifier=modifier)
         elif self.is_help(line):
             return self.helptext(line)
         else:
             if self.cli.get_methods(command) == ['get']:
-                return Rest.get(line, self.token, url=self.url)
-            return Rest.post(line, self.token, url=self.url)
+                return Rest.get(line, self.token, url=self.url,
+                                modifier=modifier)
+            return Rest.post(line, self.token, url=self.url, modifier=modifier)
         return 'I have no idea what to do with this command'
 
     def loop(self, completekey: Optional[str] = 'tab') -> None:
