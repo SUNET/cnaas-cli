@@ -99,12 +99,18 @@ def prettyprint_other(data: dict) -> str:
     return ''
 
 
-def prettyprint_dicts(data: dict, name: str) -> str:
+def prettyprint_groups(data: dict, name: str) -> str:
     for item in data['data'][name]:
         print('  ' + item + ':')
-        for device in data['data'][name][item]:
-            print('    ' + device)
+        for line in data['data'][name][item]:
+            print('    ' + line)
         print('')
+
+
+def prettyprint_version(data: dict, name: str) -> str:
+    for item in data['data']:
+        print('  ' + item + ':\t' + data['data'][item])
+    return '\n'
 
 
 def prettyprint(data: dict, command: str) -> str:
@@ -123,7 +129,9 @@ def prettyprint(data: dict, command: str) -> str:
     elif 'job_id' in data:
         return prettyprint_job(data, command)
     elif 'groups' in data['data']:
-        return prettyprint_dicts(data, 'groups')
+        return prettyprint_groups(data, 'groups')
+    elif 'version' in data['data']:
+        return prettyprint_version(data, 'version')
     elif 'data' in data and command in data['data']:
         return prettyprint_command(data, command)
     else:

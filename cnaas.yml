@@ -282,3 +282,11 @@ cli:
       attributes:
       methods:
         - name: 'get'
+
+  - command:
+      name: 'version'
+      description: 'Show version'
+      url: '/system/version'
+      attributes:
+      methods:
+        - name: 'get'
