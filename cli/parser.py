@@ -91,7 +91,7 @@ class CliParser():
 
     def get_url(self, command: str) -> str:
         """
-        Return descirption for an attribute
+        Return URL
         """
 
         url = ''

@@ -1,7 +1,9 @@
 import sys
 import getopt
 
+from urllib.parse import urlparse
 from cli.command import CliHandler
+from cli.parser import CliParser
 from signal import signal, SIGINT
 
 
@@ -12,6 +14,11 @@ def handler_sigint(signal_received, frame):
 def usage():
     print('cli.py -u <url> -t <token>')
     sys.exit(0)
+
+
+def get_domain(url):
+    uri = urlparse(url)
+    return uri.netloc
 
 
 def main(argv):
@@ -42,8 +49,20 @@ def main(argv):
             token = arg
     if token == '':
         usage()
+
+    if url == '':
+        try:
+            cli = CliParser('cnaas.yml')
+            url = cli.get_base_url()
+        except Exception:
+            print('Could not find an URL.')
+            sys.exit(0)
+
+    domain = get_domain(url)
+    prompt = 'CNaaS NMS (%s)# ' % domain
+
     try:
-        cli = CliHandler(url, token=token, banner=banner)
+        cli = CliHandler(url, token=token, banner=banner, prompt=prompt)
         while True:
             cli.loop()
     except KeyboardInterrupt as e:
