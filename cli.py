@@ -46,8 +46,8 @@ def main(argv):
         cli = CliHandler(url, token=token, banner=banner)
         while True:
             cli.loop()
-    except KeyboardInterrupt:
-        cli.new_line(str(e))
+    except KeyboardInterrupt as e:
+        cli.new_line(str(str(e)))
     except EOFError:
         print('\nGoodbye!')
         sys.exit(0)

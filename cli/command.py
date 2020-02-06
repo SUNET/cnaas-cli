@@ -81,12 +81,20 @@ class CliHandler():
             return None
 
     def __helptext_all_commands(self):
+        """
+        Print helptexts for all commands
+        """
+
         for command in self.cli.get_commands():
             description = self.cli.get_command_description(command)
             print('  %-20s %s' % (command, description))
         return ''
 
     def __helptext_command(self, line):
+        """
+        Print helptext for a single command
+        """
+
         command = line.split(' ')[1]
 
         for attribute in self.cli.get_attributes(command):
@@ -140,12 +148,12 @@ class CliHandler():
             return True
         return False
 
-    def is_help(self, command: str) -> bool:
+    def is_help(self, line: str) -> bool:
         """
         Find out whether we have a help command or not.
         """
 
-        if 'help' in command:
+        if 'help' in line:
             return True
         return False
 
@@ -199,6 +207,9 @@ class CliHandler():
         return ' '.join(command.split(' ')[1:])
 
     def new_line(self, msg: Optional[str] = ''):
+        """
+        Print a new line with an optional string
+        """
         print(msg)
 
     def execute(self, command: str) -> str:
