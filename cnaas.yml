@@ -242,7 +242,7 @@ cli:
         - name: 'post'
 
   - command:
-      name: 'repository'
+      name: 'settings'
       description: 'Refresh settings'
       url: '/repository/settings'
       attributes:
@@ -253,17 +253,12 @@ cli:
         - name: 'get'
 
   - command:
-      name: 'settings'
-      description: 'Refresh settings'
-      url: '/settings'
+      name: 'templates'
+      description: 'Refresh templates'
+      url: '/repository/templates'
       attributes:
-        - name: 'hostname'
+        - name: 'action'
           mandatory: false
-          url_prefix: true
-          description: 'Show for a specific device'
-        - name: 'device_type'
-          mandatory: false
-          url_prefix: true
-          description: 'Show for a specific device type'
+          description: 'Settings action'
       methods:
         - name: 'get'
