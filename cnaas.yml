@@ -121,9 +121,12 @@ cli:
       description: 'Sync to'
       url: '/device_syncto'
       attributes:
-        - name: 'device_type'
+        - name: 'hostname'
           mandatory: false
           description: 'device name'
+        - name: 'device_type'
+          mandatory: false
+          description: 'device type'
         - name: 'group'
           mandatory: false
           description: 'group name'
@@ -261,5 +264,21 @@ cli:
         - name: 'action'
           mandatory: false
           description: 'Settings action'
+      methods:
+        - name: 'get'
+
+  - command:
+      name: 'plugins'
+      description: 'Show plugins'
+      url: '/plugins'
+      attributes:
+      methods:
+        - name: 'get'
+
+  - command:
+      name: 'groups'
+      description: 'Show groups'
+      url: '/groups'
+      attributes:
       methods:
         - name: 'get'
