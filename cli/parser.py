@@ -51,7 +51,7 @@ class CliParser():
             if cmd.command.name != command:
                 continue
             if cmd.command.attributes is None:
-                return None
+                return []
             for attr in cmd.command.attributes:
                 cmd_attrs.append(attr.name)
         return cmd_attrs

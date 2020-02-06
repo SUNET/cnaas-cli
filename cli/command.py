@@ -123,7 +123,7 @@ class CliHandler():
         command = command.split(' ')[0]
         if command == 'history':
             for i in range(readline.get_current_history_length()):
-                print(readline.get_history_item(i + 1))
+                print('  ' + readline.get_history_item(i + 1))
         elif command == 'help':
             for cmd in self.cli.get_commands():
                 description = self.cli.get_command_description(cmd)
@@ -167,6 +167,9 @@ class CliHandler():
         if 'help' in line:
             return True
 
+        if 'history' in line:
+            return True
+
         if len(line.split(' ')) == 1:
             attributes = None
             command = line
@@ -188,7 +191,7 @@ class CliHandler():
         spec_attributes = self.cli.get_attributes(command)
         if spec_attributes is None:
             return True
-        if attributes is None and spec_attributes is not None:
+        if attributes is None and spec_attributes != []:
             print('Missing attributes')
             return False
 
@@ -219,7 +222,7 @@ class CliHandler():
         Return an error string if invalid.
         """
 
-        line = line.rstrip()
+        line = line.lstrip().rstrip()
         command = line.split(' ')[0]
 
         # Empty command, silently ignore
@@ -230,6 +233,9 @@ class CliHandler():
         if line == 'quit':
             print('Goodbye!')
             sys.exit(0)
+
+        if line == 'history':
+            return self.builtin_cmd('history')
 
         # Valid command?
         if not self.validate(line):
@@ -242,9 +248,9 @@ class CliHandler():
         elif self.is_help(line):
             return self.helptext(line)
         else:
-            if self.cli.get_methods(command)[0] == 'get':
-                return Rest.get(command, self.token, url=self.url)
-            return Rest.post(command, self.token, url=self.url)
+            if self.cli.get_methods(command) == ['get']:
+                return Rest.get(line, self.token, url=self.url)
+            return Rest.post(line, self.token, url=self.url)
         return 'I have no idea what to do with this command'
 
     def loop(self, completekey: Optional[str] = 'tab') -> None:

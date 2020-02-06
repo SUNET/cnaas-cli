@@ -114,6 +114,7 @@ cli:
           url_suffix: false
       methods:
         - name: "get"
+        - name: "post"
 
   - command:
       name: 'sync'
