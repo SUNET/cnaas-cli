@@ -4,6 +4,10 @@ from typing import Optional, List
 from cli.parser import CliParser
 from cli.prettyprint import prettyprint
 from typing import Optional, List
+from urllib3.exceptions import InsecureRequestWarning
+
+
+requests.packages.urllib3.disable_warnings(category=InsecureRequestWarning)
 
 
 class Rest():
