@@ -88,7 +88,8 @@ class Rest():
             res = requests.post(url, headers=headers, json=args, verify=False)
 
             if res.status_code != 200:
-                return 'Failed to sync device(s): ' + str(res.content)
+                return 'Could not execute command, missing arguments?\n'
+
         except Exception as e:
             return 'POST failed: ' + str(e)
         return prettyprint(res.json(), command)
