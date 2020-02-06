@@ -100,12 +100,11 @@ def prettyprint_other(data: dict) -> str:
 
 
 def prettyprint_dicts(data: dict, name: str) -> str:
-    dict_data = data['data'][name]
-
-    for item in dict_data:
-        print('  ' + item + ': ', end='')
-        print(', '.join(dict_data[item]))
-    return '\n'
+    for item in data['data'][name]:
+        print('  ' + item + ':')
+        for device in data['data'][name][item]:
+            print('    ' + device)
+        print('')
 
 
 def prettyprint(data: dict, command: str) -> str:
