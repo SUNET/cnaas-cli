@@ -212,33 +212,38 @@ class CliHandler():
         """
         print(msg)
 
-    def execute(self, command: str) -> str:
+    def execute(self, line: str) -> str:
         """
         Execute commands.
 
         Return an error string if invalid.
         """
 
+        line = line.rstrip()
+        command = line.split(' ')[0]
+
         # Empty command, silently ignore
-        if command == '':
+        if line == '':
             return ''
 
         # Quit?
-        if command == 'quit':
+        if line == 'quit':
             print('Goodbye!')
             sys.exit(0)
 
         # Valid command?
-        if not self.validate(command):
-            return 'Invalid command: %s\n' % command
+        if not self.validate(line):
+            return 'Invalid command: %s\n' % line
 
-        if self.is_show(command):
-            return Rest.get(self.strip(command), self.token, url=self.url)
-        elif self.is_no(command):
-            return Rest.delete(self.strip(command), self.token)
-        elif self.is_help(command):
-            return self.helptext(command)
+        if self.is_show(line):
+            return Rest.get(self.strip(line), self.token, url=self.url)
+        elif self.is_no(line):
+            return Rest.delete(self.strip(line), self.token)
+        elif self.is_help(line):
+            return self.helptext(line)
         else:
+            if self.cli.get_methods(command)[0] == 'get':
+                return Rest.get(command, self.token, url=self.url)
             return Rest.post(command, self.token, url=self.url)
         return 'I have no idea what to do with this command'
 
