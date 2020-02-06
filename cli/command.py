@@ -80,51 +80,31 @@ class CliHandler():
         except IndexError:
             return None
 
+    def __helptext_all_commands(self):
+        for command in self.cli.get_commands():
+            description = self.cli.get_command_description(command)
+            print('  %-20s %s' % (command, description))
+        return ''
+
+    def __helptext_command(self, line):
+        command = line.split(' ')[1]
+
+        for attribute in self.cli.get_attributes(command):
+            description = self.cli.get_attribute_description(command,
+                                                             attribute)
+            print('  %-20s %s' % (attribute, description))
+        return ''
+
     def helptext(self, line: str) -> str:
         """
         Return helptext for a certain command.
 
         Returns a helptext.
         """
-        command = line.split(' ')[1]
 
-        print('Description: ')
-        print('\t' + self.cli.get_command_description(command))
-
-        attributes = self.cli.get_attributes(command)
-        if attributes is None:
-            return ''
-
-        print_hline()
-
-        for attribute in attributes:
-            description = self.cli.get_attribute_description(command,
-                                                             attribute)
-            print('    %20s:\t%s' % (attribute, description))
-        return ''
-
-    def parseline(self, line: str) -> tuple:
-        """ Parse a command line.
-
-        Return the command together with its arguments.
-        """
-
-        line = line.strip()
-
-        if not line:
-            return None, None, line
-        if line == 'help':
-            return None, None, self.helptext(line)
-
-        i, n = 0, len(line)
-        identchars = string.ascii_letters + string.digits + '_'
-
-        while i < n and line[i] in identchars:
-            i = i+1
-
-        cmd, arg = line[:i], line[i:].strip()
-
-        return cmd, arg, line
+        if line.rstrip() == 'help':
+            return self.__helptext_all_commands()
+        return self.__helptext_command(line)
 
     def builtin_cmd(self, command: str) -> str:
         """
@@ -175,6 +155,10 @@ class CliHandler():
         """
 
         line = line.rstrip()
+
+        if 'help' in line:
+            return True
+
         if len(line.split(' ')) == 1:
             attributes = None
             command = line
