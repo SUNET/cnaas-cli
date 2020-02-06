@@ -54,9 +54,9 @@ def prettyprint_jobs(data: dict, command:str) -> str:
     return ''
 
 
-def prettyprint_other(data: dict, command: str) -> str:
+def prettyprint_command(data: dict, command: str) -> str:
     """
-    Prettyprinter for everything else
+    Prettyprinter for commands
     """
 
     headers = []
@@ -85,6 +85,16 @@ def prettyprint_other(data: dict, command: str) -> str:
     return header_formatted + '\n' + '-' * width + '\n' + values
 
 
+def prettyprint_other(data: dict) -> str:
+    """
+    Prettyprinter for everything else
+    """
+
+    if 'data' in data and isinstance(data['data'], str):
+        return data['data']
+    return ''
+
+
 def prettyprint(data: dict, command: str) -> str:
     """
     Prettyprint the JSON data we get back from the API
@@ -101,4 +111,6 @@ def prettyprint(data: dict, command: str) -> str:
     elif 'job_id' in data:
         return prettyprint_job(data, command)
     elif 'data' in data and command in data['data']:
-        return prettyprint_other(data, command)
+        return prettyprint_command(data, command)
+    else:
+        return prettyprint_other(data)
