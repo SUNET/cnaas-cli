@@ -95,10 +95,27 @@ class Rest():
         return prettyprint(res.json(), command)
 
     @classmethod
-    def delete(cls, command: str, token: str) -> str:
+    def delete(cls, command: str, token: str, url: Optional[str] = '') -> str:
         """
         DELETE method, call NMS with the right URL and arguments
 
         """
 
-        return "test string for delete"
+        if url != '':
+            (url, args) = cls.parse_args(command, url)
+        else:
+            (url, args) = cls.parse_args(command, cls.cli.get_base_url())
+
+        command = command.split(' ')[0]
+        headers = {'Authorization': 'Bearer ' + token}
+
+        try:
+            res = requests.delete(url, headers=headers, json=args,
+                                  verify=False)
+
+            if res.status_code != 200:
+                return 'Could not execute command, missing arguments?\n'
+
+        except Exception as e:
+            return 'DELETE failed: ' + str(e)
+        return prettyprint(res.json(), command)
