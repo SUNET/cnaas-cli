@@ -39,6 +39,8 @@ class CliHandler():
         if banner != '':
             print(banner)
 
+        print('Type "help" for help.\n')
+
     def read_line(self) -> tuple:
         """
         Read a command from standard in.
@@ -84,6 +86,13 @@ class CliHandler():
         """
         Print helptexts for all commands
         """
+
+        print('  %-20s Disable the command that follows' % 'no')
+        print('  %-20s Print this helptext' % 'help')
+        print('  %-20s Print command history' % 'history')
+        print('  %-20s Show the command that follows' % 'show')
+        print('  %-20s Quit the CLI' % 'quit')
+        print('')
 
         for command in self.cli.get_commands():
             description = self.cli.get_command_description(command)
