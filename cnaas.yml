@@ -237,7 +237,33 @@ cli:
         - name: "device_b"
           mandatory: false
           description: 'Device B hostname'
-
       methods:
         - name: 'get'
         - name: 'post'
+
+  - command:
+      name: 'repository'
+      description: 'Refresh settings'
+      url: '/repository/settings'
+      attributes:
+        - name: 'action'
+          mandatory: false
+          description: 'Settings action'
+      methods:
+        - name: 'get'
+
+  - command:
+      name: 'settings'
+      description: 'Refresh settings'
+      url: '/settings'
+      attributes:
+        - name: 'hostname'
+          mandatory: false
+          url_prefix: true
+          description: 'Show for a specific device'
+        - name: 'device_type'
+          mandatory: false
+          url_prefix: true
+          description: 'Show for a specific device type'
+      methods:
+        - name: 'get'
