@@ -68,19 +68,23 @@ def prettyprint_command(data: dict, command: str) -> str:
     else:
         content = data['data']
 
-    for row in content:
-        for key in row:
-            if key in forbidden:
-                continue
-            if key not in headers:
-                headers.append(key)
-            values += ' %8s\t|' % str(row[key])
-        values += '\n'
-    for header in headers:
-        header_formatted += ' %8s\t|' % str(header)
+    try:
+        for row in content:
+            for key in row:
+                if key in forbidden:
+                    continue
+                if key not in headers:
+                    headers.append(key)
+                values += ' %8s\t|' % str(row[key])
+            values += '\n'
+        for header in headers:
+            header_formatted += ' %8s\t|' % str(header)
 
-    values = values.replace('\\n', '\n')
-    width, height = terminal_size()
+        values = values.replace('\\n', '\n')
+        width, height = terminal_size()
+    except Exception:
+        print(data)
+        return 'Failed to parse output\n'
 
     return header_formatted + '\n' + '-' * width + '\n' + values
 
@@ -93,6 +97,15 @@ def prettyprint_other(data: dict) -> str:
     if 'data' in data and isinstance(data['data'], str):
         return data['data']
     return ''
+
+
+def prettyprint_dicts(data: dict, name: str) -> str:
+    dict_data = data['data'][name]
+
+    for item in dict_data:
+        print('  ' + item + ': ', end='')
+        print(', '.join(dict_data[item]))
+    return '\n'
 
 
 def prettyprint(data: dict, command: str) -> str:
@@ -110,6 +123,8 @@ def prettyprint(data: dict, command: str) -> str:
         return prettyprint_jobs(data, command)
     elif 'job_id' in data:
         return prettyprint_job(data, command)
+    elif 'groups' in data['data']:
+        return prettyprint_dicts(data, 'groups')
     elif 'data' in data and command in data['data']:
         return prettyprint_command(data, command)
     else:
