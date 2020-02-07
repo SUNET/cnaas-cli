@@ -10,3 +10,6 @@ Kristofer Hallin, SUNET 2020.
 ## Usage example
 
 python3 cli.py -u https://localhost:1443/api/v1.0 -t JWT_token_here
+
+
+![CLI example](cli_animation.gif?raw=true)
