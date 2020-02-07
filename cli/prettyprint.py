@@ -27,17 +27,19 @@ def prettyprint_diff(diff: str) -> str:
 
     """
 
-    output = ''
+    output = '\n'
 
     diff = diff.replace('\\n', '\n')
 
     for line in diff.split('\n'):
         if line.startswith('+'):
-            output += '\t\033[92m %s\n' % line
+            output += '\033[92m %s\n' % line
         elif line.startswith('-'):
-            output += '\t\033[91m %s\n' % line
+            output += '\033[91m %s\n' % line
+        elif line.startswith('@'):
+            output += '\033[93m %s\n' % line
         else:
-            output += '\t \033[0m%s\n' % line
+            output += ' \033[0m%s\n' % line
 
     return output
 
