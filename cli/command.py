@@ -88,17 +88,20 @@ class CliHandler():
         Print helptexts for all commands
         """
 
+        print('Built-in commands:')
         print('  %-20s Disable the command that follows' % 'no')
         print('  %-20s Print this helptext' % 'help')
         print('  %-20s Print command history' % 'history')
         print('  %-20s Show the command that follows' % 'show')
         print('  %-20s Quit the CLI' % 'quit')
         print('')
+        print('Other commands:', end='')
+        print('')
 
         for command in self.cli.get_commands():
             description = self.cli.get_command_description(command)
             print('  %-20s %s' % (command, description))
-        return ''
+        return '\n'
 
     def __helptext_command(self, line):
         """
@@ -272,14 +275,17 @@ class CliHandler():
             return Rest.post(line, self.token, url=self.url, modifier=modifier)
         return 'I have no idea what to do with this command'
 
-    def loop(self, completekey: Optional[str] = 'tab') -> None:
+    def loop(self) -> None:
         """
         Main loop
         """
         self.old_completer = readline.get_completer()
 
         readline.set_completer(self.complete)
-        readline.parse_and_bind(completekey+": complete")
+
+        # Tab and ? will do completion
+        readline.parse_and_bind('tab' + ': complete')
+        readline.parse_and_bind('?' + ': complete')
 
         line = input(self.prompt)
         print(self.execute(line), end='')

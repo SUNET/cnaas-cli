@@ -1,5 +1,5 @@
 from typing import Optional, List
-from cli.terminal import get_hline, terminal_size, print_hline
+from cli.terminal import get_hline, terminal_size, print_hline, lrstrip
 
 
 forbidden = ['confhash', 'oob_ip', 'infra_ip', 'site_id', 'port', 'dhcp_ip',
@@ -21,7 +21,7 @@ def prettyprint_job(data: dict, command: str) -> str:
     return None
 
 
-def prettyprint_jobs(data: dict, command:str) -> str:
+def prettyprint_jobs(data: dict, command: str) -> str:
     """
     Prettyprinter for jobs output
     """
@@ -103,6 +103,9 @@ def prettyprint_other(data: dict) -> str:
 
 
 def prettyprint_groups(data: dict, name: str) -> str:
+    """
+    Prettyprint groups
+    """
 
     output = ''
 
@@ -115,6 +118,9 @@ def prettyprint_groups(data: dict, name: str) -> str:
 
 
 def prettyprint_version(data: dict, name: str) -> str:
+    """
+    Prettyprint version output
+    """
 
     output = ''
 
@@ -125,15 +131,19 @@ def prettyprint_version(data: dict, name: str) -> str:
 
 
 def prettyprint_modifier(output, modifier):
+    """
+    Handle modifiers, grep etc
+    """
+
     modified_output = ''
+    command = lrstrip(modifier).split(' ')[0]
+    args = ' '.join(lrstrip(modifier).split(' ')[1:])
 
-    command = modifier.lstrip().rstrip().split(' ')[0]
-    args = ' '.join(modifier.lstrip().rstrip().split(' ')[1:])
-
-    if command.rstrip() == 'grep':
+    if lrstrip(command) == 'grep':
         for line in output.split('\n'):
-            if args in line:
-                modified_output += line + '\n'
+            if args not in line:
+                continue
+            modified_output += line + '\n'
     modified_output += '\n'
 
     return modified_output

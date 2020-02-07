@@ -18,11 +18,19 @@ def print_hline(character: Optional[str] = '-',
 def get_hline(character: Optional[str] = '-',
               newline: Optional[bool] = False,
               width: Optional[int] = 0) -> None:
-    if newline:
-        print('')
+    """
+    Return the same number of characters as the terminal width
+    """
+
     if width == 0:
         width, height = terminal_size()
-    return character * width
+
+    line = character * width
+
+    if newline:
+        line += '\n'
+
+    return line
 
 
 def terminal_size() -> tuple:
@@ -34,3 +42,11 @@ def terminal_size() -> tuple:
     h, w, hp, wp = struct.unpack('HHHH', fcntl.ioctl(0, termios.TIOCGWINSZ,
                                                      packed_struct))
     return w, h
+
+
+def lrstrip(line: str) -> str:
+    """
+    Do lstrip and rstrip on a string
+    """
+
+    return line.lstrip().rstrip()
