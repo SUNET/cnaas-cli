@@ -21,9 +21,72 @@ def prettyprint_job(data: dict, command: str) -> str:
     return None
 
 
+def prettyprint_diff(diff: str) -> str:
+    """
+    Colorcode the diff
+
+    """
+
+    output = ''
+
+    diff = diff.replace('\\n', '\n')
+
+    for line in diff.split('\n'):
+        if line.startswith('+'):
+            output += '\t\033[92m %s\n' % line
+        elif line.startswith('-'):
+            output += '\t\033[91m %s\n' % line
+        else:
+            output += '\t \033[0m%s\n' % line
+
+    return output
+
+
+def prettyprint_devices(data: dict) -> str:
+    """
+    Format outpu from devices
+
+    """
+    output = ''
+    job_data = data['data']['jobs'][0]
+
+    output += '  Comment: %-20s\n' % job_data['comment']
+    output += '  Finished devices: %-20s\n' % ', '.join(job_data['finished_devices'])
+
+    for device in job_data['result']['devices'].keys():
+        tasks = job_data['result']['devices'][device]['job_tasks']
+        output += '\n' + get_hline()
+        output += '  Device: %s\n' % device
+
+        for task in tasks:
+            if task['task_name'] != 'Sync device config':
+                continue
+            output += '  Failed: %s\n' % str(task['failed'])
+            output += '  Diff: \n'
+            output += prettyprint_diff(task['diff'])
+
+    return output
+
+
+def prettyprint_message(data: dict) -> str:
+    """
+    Format message output
+
+    """
+
+    output = ''
+    job_data = data['data']['jobs'][0]
+
+    output += '  Comment: %s\n' % job_data['comment']
+    output += '  Message: %s\n' % job_data['result']['message']
+
+    return output
+
+
 def prettyprint_jobs(data: dict, command: str) -> str:
     """
     Prettyprinter for jobs output
+
     """
 
     output = ''
@@ -34,7 +97,8 @@ def prettyprint_jobs(data: dict, command: str) -> str:
         else:
             output += '%25s\t| ' % field
 
-    output += get_hline(newline=True)
+    output += '\n' + get_hline(newline=True)
+    nr_jobs = len(data['data']['jobs'])
 
     for job in data['data']['jobs']:
         for key in job:
@@ -53,12 +117,28 @@ def prettyprint_jobs(data: dict, command: str) -> str:
             else:
                 output += '%25s\t ' % job[key]
         output += '\n'
-    return output
+    output += '\n'
+
+    # If got a single job, print more information
+    if nr_jobs > 1:
+        return output
+
+    job_data = data['data']['jobs'][0]['result']
+
+    if job_data is None:
+        pass
+    elif 'devices' in job_data:
+        output += prettyprint_devices(data)
+    elif 'message' in job_data:
+        output += prettyprint_message(data)
+
+    return output + '\n'
 
 
 def prettyprint_command(data: dict, command: str) -> str:
     """
     Prettyprinter for commands
+
     """
 
     output = ''
@@ -95,6 +175,7 @@ def prettyprint_command(data: dict, command: str) -> str:
 def prettyprint_other(data: dict) -> str:
     """
     Prettyprinter for everything else
+
     """
 
     if 'data' in data and isinstance(data['data'], str):
@@ -120,6 +201,7 @@ def prettyprint_groups(data: dict, name: str) -> str:
 def prettyprint_version(data: dict, name: str) -> str:
     """
     Prettyprint version output
+
     """
 
     output = ''
@@ -133,6 +215,7 @@ def prettyprint_version(data: dict, name: str) -> str:
 def prettyprint_modifier(output, modifier):
     """
     Handle modifiers, grep etc
+
     """
 
     modified_output = ''
@@ -152,6 +235,7 @@ def prettyprint_modifier(output, modifier):
 def prettyprint(data: dict, command: str, modifier: Optional[str] = '') -> str:
     """
     Prettyprint the JSON data we get back from the API
+
     """
 
     output = ''
