@@ -28,7 +28,6 @@ def prettyprint_diff(diff: str) -> str:
     """
 
     output = '\n'
-
     diff = diff.replace('\\n', '\n')
 
     for line in diff.split('\n'):
@@ -44,28 +43,58 @@ def prettyprint_diff(diff: str) -> str:
     return output
 
 
+def get_devices_data(data):
+    """
+    Aggregate diffs and get list of hostnames
+
+    """
+
+    devices = dict()
+    diffs = dict()
+
+    devices = data['result']['devices']
+
+    for device in devices:
+        hostname = device
+        failed = devices[device]['failed']
+
+        for task in devices[device]['job_tasks']:
+            if task['task_name'] != 'Sync device config':
+                continue
+            diff = lrstrip(task['diff'])
+
+        if diff not in diffs:
+            diffs[diff] = {
+                'hostnames': [hostname],
+                'failed': failed
+            }
+        else:
+            diffs[diff]['hostnames'].append(hostname)
+
+    return diffs
+
+
 def prettyprint_devices(data: dict) -> str:
     """
     Format outpu from devices
 
     """
-    output = ''
-    job_data = data['data']['jobs'][0]
+    devices = get_devices_data(data['data']['jobs'][0])
+    first_job = data['data']['jobs'][0]
+    finished = first_job['finished_devices']
 
-    output += '  Comment: %-20s\n' % job_data['comment']
-    output += '  Finished devices: %-20s\n' % ', '.join(job_data['finished_devices'])
+    output = '  Comment: %-20s\n' % first_job['comment']
+    output += '  Finished devices: %-20s\n' % ', '.join(finished)
 
-    for device in job_data['result']['devices'].keys():
-        tasks = job_data['result']['devices'][device]['job_tasks']
+    for diff in devices:
+        hostnames = devices[diff]['hostnames']
+        failed = devices[diff]['failed']
+
         output += '\n' + get_hline()
-        output += '  Device: %s\n' % device
-
-        for task in tasks:
-            if task['task_name'] != 'Sync device config':
-                continue
-            output += '  Failed: %s\n' % str(task['failed'])
-            output += '  Diff: \n'
-            output += prettyprint_diff(task['diff'])
+        output += '  Device(s): %s\n' % ', '.join(hostnames)
+        output += '  Failed: %s\n' % str(failed)
+        output += '  Diff: \n'
+        output += prettyprint_diff(diff)
 
     return output
 
