@@ -33,6 +33,8 @@ def prettyprint_diff(diff: str) -> str:
     for line in diff.split('\n'):
         if line.startswith('+'):
             output += '\033[92m %s\n' % line
+        elif line.startswith('@@'):
+            continue
         elif line.startswith('-'):
             output += '\033[91m %s\n' % line
         elif line.startswith('@'):
@@ -61,7 +63,7 @@ def get_devices_data(data):
         for task in devices[device]['job_tasks']:
             if task['task_name'] != 'Sync device config':
                 continue
-            diff = lrstrip(task['diff'])
+            diff = prettyprint_diff(lrstrip(task['diff']))
 
         if diff not in diffs:
             diffs[diff] = {
@@ -94,7 +96,7 @@ def prettyprint_devices(data: dict) -> str:
         output += '  Device(s): %s\n' % ', '.join(hostnames)
         output += '  Failed: %s\n' % str(failed)
         output += '  Diff: \n'
-        output += prettyprint_diff(diff)
+        output += diff
 
     return output
 
