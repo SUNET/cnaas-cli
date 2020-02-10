@@ -20,6 +20,7 @@ class Rest():
         command itself and then build a dict with arguments.
 
         """
+
         args = line.rstrip().split(' ')[1:]
         command = line.split(' ')[0]
 
@@ -71,6 +72,7 @@ class Rest():
                 return 'Could execute command, missing arguments?\n'
         except Exception as e:
             return 'GET failed: ' + str(e)
+
         return prettyprint(res.json(), command, modifier=modifier)
 
     @classmethod
@@ -97,6 +99,7 @@ class Rest():
 
         except Exception as e:
             return 'POST failed: ' + str(e)
+
         return prettyprint(res.json(), command, modifier=modifier)
 
     @classmethod
@@ -124,4 +127,5 @@ class Rest():
 
         except Exception as e:
             return 'DELETE failed: ' + str(e)
+
         return prettyprint(res.json(), command, modifier=modifier)

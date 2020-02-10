@@ -102,6 +102,7 @@ class CliHandler():
         for command in self.cli.get_commands():
             description = self.cli.get_command_description(command)
             print('  %-20s %s' % (command, description))
+
         return '\n'
 
     def __helptext_command(self, line):
@@ -126,6 +127,7 @@ class CliHandler():
 
         if line.rstrip() == 'help':
             return self.__helptext_all_commands()
+
         return self.__helptext_command(line)
 
     def builtin_cmd(self, command: str) -> str:
@@ -142,6 +144,7 @@ class CliHandler():
             for cmd in self.cli.get_commands():
                 description = self.cli.get_command_description(cmd)
                 print('%20s: %s' % (cmd, description))
+
         return ''
 
     def is_show(self, command: str) -> bool:
@@ -151,6 +154,7 @@ class CliHandler():
 
         if command.split(' ')[0] == 'show':
             return True
+
         return False
 
     def is_no(self, command: str) -> bool:
@@ -160,6 +164,7 @@ class CliHandler():
 
         if command.split(' ')[0] == 'no':
             return True
+
         return False
 
     def is_help(self, line: str) -> bool:
@@ -169,6 +174,7 @@ class CliHandler():
 
         if 'help' in line:
             return True
+
         return False
 
     def validate(self, line: str) -> bool:
@@ -216,6 +222,7 @@ class CliHandler():
                                                                  attr):
                 print('Missing attribute: ' + attr)
                 return False
+
         return True
 
     def strip(self, command: str) -> str:
@@ -224,12 +231,6 @@ class CliHandler():
         """
 
         return ' '.join(command.split(' ')[1:])
-
-    def new_line(self, msg: Optional[str] = ''):
-        """
-        Print a new line with an optional string
-        """
-        print(msg)
 
     def execute(self, line: str) -> str:
         """
@@ -279,7 +280,9 @@ class CliHandler():
     def loop(self) -> None:
         """
         Main loop
+
         """
+
         self.old_completer = readline.get_completer()
 
         readline.set_completer(self.complete)

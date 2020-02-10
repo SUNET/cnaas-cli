@@ -8,16 +8,31 @@ from signal import signal, SIGINT
 
 
 def handler_sigint(signal_received, frame):
+    """
+    Handle Ctrl+C
+
+    """
+
     pass
 
 
 def usage():
+    """
+    Print usage string
+
+    """
     print('cli.py -u <url> -t <token>')
     sys.exit(0)
 
 
 def get_domain(url):
+    """
+    Get domain name from URL
+
+    """
+
     uri = urlparse(url)
+
     return uri.netloc
 
 
@@ -28,6 +43,7 @@ def main(argv):
 CNaaS - Command Line Interface\n
 (C) SUNET (http://www.sunet.se), 2020
 """
+
     signal(SIGINT, handler_sigint)
 
     try:
@@ -58,7 +74,7 @@ CNaaS - Command Line Interface\n
         while True:
             cli.loop()
     except KeyboardInterrupt as e:
-        cli.new_line(str(str(e)))
+        print('\n' + (str(str(e))))
     except EOFError:
         print('\nGoodbye!')
         sys.exit(0)

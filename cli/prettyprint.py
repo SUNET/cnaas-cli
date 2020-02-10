@@ -18,6 +18,7 @@ def prettyprint_job(data: dict, command: str) -> str:
         if 'job_id' in data:
             res += '\n  Job ID: ' + str(data['job_id'])
         return res + '\n\n'
+
     return None
 
 
@@ -83,6 +84,7 @@ def prettyprint_devices(data: dict) -> str:
     Format outpu from devices
 
     """
+
     devices = get_devices_data(data['data']['jobs'][0])
     first_job = data['data']['jobs'][0]
     finished = first_job['finished_devices']
@@ -109,10 +111,9 @@ def prettyprint_message(data: dict) -> str:
 
     """
 
-    output = ''
     job_data = data['data']['jobs'][0]
 
-    output += '  Comment: %s\n' % job_data['comment']
+    output = '  Comment: %s\n' % job_data['comment']
     output += '  Message: %s\n' % job_data['result']['message']
 
     return output
@@ -215,6 +216,7 @@ def prettyprint_other(data: dict) -> str:
 
     if 'data' in data and isinstance(data['data'], str):
         return '  ' + data['data'] + '\n'
+
     return ''
 
 
@@ -230,6 +232,7 @@ def prettyprint_groups(data: dict, name: str) -> str:
         for line in data['data'][name][item]:
             output += '    ' + line + '\n'
         output += '\n'
+
     return output
 
 
@@ -244,27 +247,28 @@ def prettyprint_version(data: dict, name: str) -> str:
     for item in data['data']:
         output += '  ' + item + ':\t' + data['data'][item] + '\n'
     output += '\n'
+
     return output
 
 
-def prettyprint_modifier(output, modifier):
+def prettyprint_modifier(lines, modifier):
     """
     Handle modifiers, grep etc
 
     """
 
-    modified_output = ''
+    output = ''
     command = lrstrip(modifier).split(' ')[0]
     args = ' '.join(lrstrip(modifier).split(' ')[1:])
 
     if lrstrip(command) == 'grep':
-        for line in output.split('\n'):
+        for line in lines.split('\n'):
             if args not in line:
                 continue
-            modified_output += line + '\n'
-    modified_output += '\n'
+            output += line + '\n'
+    output += '\n'
 
-    return modified_output
+    return output
 
 
 def prettyprint(data: dict, command: str, modifier: Optional[str] = '') -> str:
