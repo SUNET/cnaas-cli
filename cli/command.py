@@ -40,8 +40,6 @@ class CliHandler():
         if banner != '':
             print(banner)
 
-        print('Type "help" for help.\n')
-
     def read_line(self) -> tuple:
         """
         Read a command from standard in.
