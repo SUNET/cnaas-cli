@@ -52,6 +52,7 @@ def get_devices_data(data):
     """
 
     devices = dict()
+    diff = ''
     diffs = dict()
 
     devices = data['result']['devices']
@@ -63,7 +64,8 @@ def get_devices_data(data):
         for task in devices[device]['job_tasks']:
             if task['task_name'] != 'Sync device config':
                 continue
-            diff = prettyprint_diff(lrstrip(task['diff']))
+            if task['diff'] is not None:
+                diff = prettyprint_diff(lrstrip(task['diff']))
 
         if diff not in diffs:
             diffs[diff] = {

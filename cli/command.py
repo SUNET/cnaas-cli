@@ -32,7 +32,7 @@ class CliHandler():
         self.prompt = prompt
         self.cli = CliParser(model)
         self.builtin = ['no', 'show', 'help', 'history', 'quit']
-        self.modifiers = ['grep']
+        self.modifiers = ['|', 'grep']
         self.node_name = ''
         self.commands = self.cli.get_commands()
         self.commands = self.commands + self.builtin
@@ -86,6 +86,7 @@ class CliHandler():
     def __helptext_all_commands(self):
         """
         Print helptexts for all commands
+
         """
 
         print('Built-in commands:')
