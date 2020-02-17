@@ -290,3 +290,14 @@ cli:
       attributes:
       methods:
         - name: 'get'
+
+  - command:
+      name: 'interfaces'
+      description: 'Interface'
+      url: '/device/<hostname>/interfaces'
+      attributes:
+        - name: 'hostname'
+          mandatory: True
+          description: 'Configure interfaces'
+      methods:
+        - name: 'get'
