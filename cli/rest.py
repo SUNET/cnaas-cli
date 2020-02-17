@@ -1,3 +1,4 @@
+import re
 import requests
 
 from typing import Optional, List
@@ -42,8 +43,12 @@ class Rest():
         # Sometimes we want to add something to the end of an URL.
         new_args = dict()
         for key in args:
+            pattern = re.compile(r'<%s?>' % key)
+
             if cls.cli.get_url_suffix(command, key):
                 url += '/' + str(args[key])
+            elif pattern.search(url):
+                url = pattern.sub(str(args[key]), url)
             else:
                 new_args[key] = args[key]
 
