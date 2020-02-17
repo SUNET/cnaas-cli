@@ -198,9 +198,7 @@ class CliHandler():
                 attributes = line.rstrip().split(' ')[1:]
                 command = line.split(' ')[0]
 
-        attributes_len = len(attributes)
-
-        if attributes is not None and attributes_len % 2 != 0:
+        if attributes is not None and len(attributes) % 2 != 0:
             print('Missing attribute values')
             return False
 
