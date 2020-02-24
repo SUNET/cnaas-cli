@@ -108,6 +108,33 @@ class Rest():
         return prettyprint(res.json(), command, modifier=modifier)
 
     @classmethod
+    def put(cls, command: str, token: str, url: Optional[str] = '',
+            modifier: Optional[str] = '') -> str:
+        """
+        PUT method, call NMS with the right URL and arguments
+
+        """
+
+        if url != '':
+            (url, args) = cls.parse_args(command, url)
+        else:
+            (url, args) = cls.parse_args(command, cls.cli.get_base_url())
+
+        command = command.split(' ')[0]
+        headers = {'Authorization': 'Bearer ' + token}
+
+        try:
+            res = requests.put(url, headers=headers, json=args, verify=False)
+
+            if res.status_code != 200:
+                return 'Could not execute command, missing arguments?\n'
+
+        except Exception as e:
+            return 'POST failed: ' + str(e)
+
+        return prettyprint(res.json(), command, modifier=modifier)
+
+    @classmethod
     def delete(cls, command: str, token: str, url: Optional[str] = '',
                modifier: Optional[str] = '') -> str:
         """

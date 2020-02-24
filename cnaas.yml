@@ -255,6 +255,7 @@ cli:
           description: 'Settings action'
       methods:
         - name: 'get'
+        - name: 'put'
 
   - command:
       name: 'templates'
@@ -266,6 +267,7 @@ cli:
           description: 'Settings action'
       methods:
         - name: 'get'
+        - name: 'put'
 
   - command:
       name: 'plugins'

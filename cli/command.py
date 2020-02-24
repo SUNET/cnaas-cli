@@ -270,6 +270,10 @@ class CliHandler():
             if self.cli.get_methods(command) == ['get']:
                 return Rest.get(line, self.token, url=self.url,
                                 modifier=modifier)
+            elif self.cli.get_methods(command) == ['get', 'put']:
+                return Rest.put(line, self.token, url=self.url,
+                                modifier=modifier)
+
             return Rest.post(line, self.token, url=self.url, modifier=modifier)
         return 'I have no idea what to do with this command'
 
