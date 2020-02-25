@@ -28,5 +28,4 @@ class f_cli_command(BaseModel):
 
 
 class f_cli(BaseModel):
-    base_url: str = ''
     cli: List[f_cli_command]
