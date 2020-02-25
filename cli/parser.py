@@ -68,16 +68,13 @@ class CliParser():
         Return whether an attribute is mandatory or not
 
         """
-
-        mandatory = []
-
         for cmd in self.cli.cli:
             if cmd.command.name != command:
                 continue
             for attr in cmd.command.attributes:
-                if attr != attribute:
+                if attr.name != attribute:
                     continue
-                if attr.mandatory:
+                if attr.mandatory is True:
                     return True
                 else:
                     return False
@@ -131,14 +128,6 @@ class CliParser():
 
         return cmd_methods
 
-    def get_base_url(self) -> str:
-        """
-        Return base URL
-
-        """
-
-        return self.cli.base_url
-
     def get_url_suffix(self, command: str, attribute: str) -> bool:
         """
         Find out if an argument should be a suffix to the URL or not
@@ -148,6 +137,8 @@ class CliParser():
         for cmd in self.cli.cli:
             if cmd.command.name != command:
                 continue
+            if cmd.command.attributes is None:
+                return None
             for attr in cmd.command.attributes:
                 if attr.name != attribute:
                     continue
