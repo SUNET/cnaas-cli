@@ -1,9 +1,8 @@
 ---
-base_url: 'http://localhost:5000/api/v1.0'
 cli:
   - command:
       name: 'device_init'
-      description: 'Init device'
+      description: 'Initializd a device'
       url: '/device_init'
       attributes:
         - name: 'id'
@@ -33,11 +32,11 @@ cli:
       url: '/device'
       attributes:
         - name: 'id'
-          mandatory: false
+          mandatory: true
           description: 'Device ID'
           url_suffix: true
         - name: "hostname"
-          mandatory: false
+          mandatory: true
           description: 'Hostname'
           url_suffix: false
         - name: "site_id"
@@ -73,7 +72,7 @@ cli:
           description: 'MAC adress'
           url_suffix: false
         - name: "platform"
-          mandatory: false
+          mandatory: true
           description: 'Platform'
           url_suffix: false
         - name: "vendor"
@@ -97,7 +96,7 @@ cli:
           description: 'Device state'
           url_suffix: false
         - name: "device_type"
-          mandatory: false
+          mandatory: true
           description: 'Type'
           url_suffix: false
         - name: "confhash"
@@ -168,25 +167,25 @@ cli:
       url: '/linknets'
       attributes:
         - name: 'id'
-          mandatory: false
+          mandatory: true
           description: 'Job ID'
         - name: "ipv4_network"
-          mandatory: false
+          mandatory: true
           description: 'IPv4 Network'
         - name: "device_a_id"
-          mandatory: false
+          mandatory: true
           description: 'Device A ID'
         - name: "device_a_ip"
-          mandatory: false
+          mandatory: true
           description: 'Device A IP'
         - name: "device_a_port"
           mandatory: false
           description: 'Device A port'
         - name: "device_b_id"
-          mandatory: false
+          mandatory: true
           description: 'Device B ID'
         - name: "device_b_ip"
-          mandatory: false
+          mandatory: true
           description: 'Device B IP'
         - name: "device_b_port"
           mandatory: false
@@ -207,21 +206,21 @@ cli:
       url: '/mgmtdomains'
       attributes:
         - name: 'id'
-          mandatory: false
+          mandatory: true
           description: 'Job ID'
         - name: "ipv4_gw"
-          mandatory: false
+          mandatory: true
           description: 'IPv4 gateway'
         - name: "device_a_id"
-          mandatory: false
+          mandatory: true
           description: 'Device A ID'
         - name: "device_a_ip"
-          mandatory: false
+          mandatory: true
           description: 'Device A IP'
-          mandatory: false
+          mandatory: true
           description: 'Device B ID'
         - name: "device_b_ip"
-          mandatory: false
+          mandatory: true
           description: 'Device B IP'
         - name: "site_id"
           mandatory: false
@@ -230,7 +229,7 @@ cli:
           mandatory: false
           description: 'Description'
         - name: "vlan"
-          mandatory: false
+          mandatory: true
           description: 'VLAN'
         - name: "esi_mac"
           mandatory: false
@@ -251,7 +250,7 @@ cli:
       url: '/repository/settings'
       attributes:
         - name: 'action'
-          mandatory: false
+          mandatory: true
           description: 'Settings action'
       methods:
         - name: 'get'
@@ -263,7 +262,7 @@ cli:
       url: '/repository/templates'
       attributes:
         - name: 'action'
-          mandatory: false
+          mandatory: true
           description: 'Settings action'
       methods:
         - name: 'get'
@@ -299,7 +298,7 @@ cli:
       url: '/device/<hostname>/interfaces'
       attributes:
         - name: 'hostname'
-          mandatory: True
+          mandatory: true
           description: 'Configure interfaces'
       methods:
         - name: 'get'
