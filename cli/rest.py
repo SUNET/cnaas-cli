@@ -25,10 +25,7 @@ class Rest():
         args = line.rstrip().split(' ')[1:]
         command = line.split(' ')[0]
 
-        if url == '':
-            url = cls.cli.get_base_url() + cls.cli.get_url(command)
-        else:
-            url = url + cls.cli.get_url(command)
+        url = url + cls.cli.get_url(command)
 
         # Make a dict of arguments and values
         args = dict(zip(args[::2], args[1::2]))
@@ -55,17 +52,14 @@ class Rest():
         return (url, new_args)
 
     @classmethod
-    def get(cls, command: str, token: str, url: Optional[str] = '',
+    def get(cls, command: str, token: str, url: str,
             modifier: Optional[str] = '') -> str:
         """
         GET method, call NMS with the right URL and arguments
 
         """
 
-        if url != '':
-            (url, args) = cls.parse_args(command, url)
-        else:
-            (url, args) = cls.parse_args(command, cls.cli.get_base_url())
+        (url, args) = cls.parse_args(command, url)
 
         command = command.split(' ')[0]
         headers = {'Authorization': 'Bearer ' + token}
@@ -74,24 +68,21 @@ class Rest():
             res = requests.get(url, headers=headers, json=args, verify=False)
 
             if res.status_code != 200:
-                return 'Could execute command, missing arguments?\n'
+                return 'Could execute command.\n\n'
         except Exception as e:
-            return 'GET failed: ' + str(e)
+            return 'Could not reach CNaaS NMS, wrong URL?\n\n'
 
         return prettyprint(res.json(), command, modifier=modifier)
 
     @classmethod
-    def post(cls, command: str, token: str, url: Optional[str] = '',
+    def post(cls, command: str, token: str, url: str,
              modifier: Optional[str] = '') -> str:
         """
         POST method, call NMS with the right URL and arguments
 
         """
 
-        if url != '':
-            (url, args) = cls.parse_args(command, url)
-        else:
-            (url, args) = cls.parse_args(command, cls.cli.get_base_url())
+        (url, args) = cls.parse_args(command, url)
 
         command = command.split(' ')[0]
         headers = {'Authorization': 'Bearer ' + token}
@@ -100,25 +91,22 @@ class Rest():
             res = requests.post(url, headers=headers, json=args, verify=False)
 
             if res.status_code != 200:
-                return 'Could not execute command, missing arguments?\n'
+                return 'Could not execute command.\n\n'
 
         except Exception as e:
-            return 'POST failed: ' + str(e)
+            return 'Could not reach CNaaS NMS, wrong URL?\n\n'
 
         return prettyprint(res.json(), command, modifier=modifier)
 
     @classmethod
-    def put(cls, command: str, token: str, url: Optional[str] = '',
+    def put(cls, command: str, token: str, url: str,
             modifier: Optional[str] = '') -> str:
         """
         PUT method, call NMS with the right URL and arguments
 
         """
 
-        if url != '':
-            (url, args) = cls.parse_args(command, url)
-        else:
-            (url, args) = cls.parse_args(command, cls.cli.get_base_url())
+        (url, args) = cls.parse_args(command, url)
 
         command = command.split(' ')[0]
         headers = {'Authorization': 'Bearer ' + token}
@@ -127,25 +115,22 @@ class Rest():
             res = requests.put(url, headers=headers, json=args, verify=False)
 
             if res.status_code != 200:
-                return 'Could not execute command, missing arguments?\n'
+                return 'Could not execute command.\n\n'
 
         except Exception as e:
-            return 'POST failed: ' + str(e)
+            return 'Could not reach CNaaS NMS, wrong URL?\n\n'
 
         return prettyprint(res.json(), command, modifier=modifier)
 
     @classmethod
-    def delete(cls, command: str, token: str, url: Optional[str] = '',
+    def delete(cls, command: str, token: str, url: str,
                modifier: Optional[str] = '') -> str:
         """
         DELETE method, call NMS with the right URL and arguments
 
         """
 
-        if url != '':
-            (url, args) = cls.parse_args(command, url)
-        else:
-            (url, args) = cls.parse_args(command, cls.cli.get_base_url())
+        (url, args) = cls.parse_args(command, url)
 
         command = command.split(' ')[0]
         headers = {'Authorization': 'Bearer ' + token}
@@ -155,9 +140,9 @@ class Rest():
                                   verify=False)
 
             if res.status_code != 200:
-                return 'Could not execute command, missing arguments?\n'
+                return 'Could not execute command.\n\n'
 
         except Exception as e:
-            return 'DELETE failed: ' + str(e)
+            return 'Could not reach CNaaS NMS, wrong URL?\n\n'
 
         return prettyprint(res.json(), command, modifier=modifier)
