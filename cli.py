@@ -33,6 +33,10 @@ def get_domain(url):
 
     uri = urlparse(url)
 
+    if uri.scheme == '' or uri.netloc == '':
+        print('Could not parse URL.')
+        sys.exit(0)
+
     return uri.netloc
 
 
@@ -71,16 +75,11 @@ CNaaS - Command Line Interface\n
             url = arg
         if opt == '-t':
             token = arg
+
     if token == '':
         usage()
-
     if url == '':
-        try:
-            cli = CliParser('cnaas.yml')
-            url = cli.get_base_url()
-        except Exception:
-            print('Could not find an URL.')
-            sys.exit(0)
+        usage()
 
     domain = get_domain(url)
     prompt = 'CNaaS NMS (%s)# ' % domain
