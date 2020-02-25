@@ -35,7 +35,6 @@ class CliHandler():
         self.modifiers = ['|', 'grep']
         self.node_name = ''
         self.commands = self.cli.get_commands()
-        self.commands = self.commands + self.builtin
 
         if banner != '':
             print(banner)
@@ -62,12 +61,11 @@ class CliHandler():
         Returns a possible completion.
 
         """
-
         line, last = self.read_line()
         commandlen = len(line.split(' '))
 
         if commandlen < 2 and not line.endswith(' '):
-            commands = self.commands
+            commands = self.commands + self.builtin
         else:
             commands = self.cli.get_attributes(self.node_name)
             commands += self.modifiers
@@ -180,12 +178,9 @@ class CliHandler():
         Find out if this is a valid command or not.
         """
 
-        line = line.rstrip()
+        line = self.strip(line)
 
-        if 'help' in line:
-            return True
-
-        if 'history' in line:
+        if self.is_help(line) or self.is_show(line):
             return True
 
         if len(line.split(' ')) == 1:
@@ -203,23 +198,26 @@ class CliHandler():
             return False
 
         if command not in self.commands:
-            print('Command do not exist')
+            print('Command does not exist')
             return False
 
         spec_attributes = self.cli.get_attributes(command)
-        if spec_attributes is None:
+
+        if spec_attributes is None and attributes is None:
             return True
-        if attributes is None and spec_attributes != []:
-            print('Missing attributes')
+
+        if spec_attributes is None and attributes is not None:
+            print('Command did not expect any attributes')
             return False
 
         for attr in spec_attributes:
-            if attr not in attributes and self.cli.get_mandatory(command,
-                                                                 attr):
-                print('Missing attribute: ' + attr)
-                return False
+            if attributes is not None:
+                if attr in attributes:
+                    continue
+            if self.cli.get_mandatory(command, attr):
+                print('Missing mandatory attribute: ' + attr)
 
-        return True
+        return False
 
     def strip(self, command: str) -> str:
         """
@@ -257,25 +255,53 @@ class CliHandler():
 
         # Valid command?
         if not self.validate(line):
-            return 'Invalid command: %s\n' % line
+            return 'Invalid command: %s\n\n' % line
 
         if self.is_show(line):
-            return Rest.get(self.strip(line), self.token, url=self.url,
+            return Rest.get(self.strip(line), self.token, self.url,
                             modifier=modifier)
         elif self.is_no(line):
-            return Rest.delete(self.strip(line), self.token, modifier=modifier)
+            return Rest.delete(self.strip(line), self.token, self.url,
+                               modifier=modifier)
         elif self.is_help(line):
             return self.helptext(line)
         else:
             if self.cli.get_methods(command) == ['get']:
-                return Rest.get(line, self.token, url=self.url,
+                return Rest.get(line, self.token, self.url,
                                 modifier=modifier)
             elif self.cli.get_methods(command) == ['get', 'put']:
-                return Rest.put(line, self.token, url=self.url,
+                return Rest.put(line, self.token, self.url,
                                 modifier=modifier)
 
             return Rest.post(line, self.token, url=self.url, modifier=modifier)
         return 'I have no idea what to do with this command'
+
+    def print_suggestions(self, substitution, matches, longest_match_length):
+        line = readline.get_line_buffer()
+        cmdlist = line.split(' ')
+
+        print('')
+        if len(cmdlist) == 1 or len(cmdlist) == 2 and cmdlist[0] in self.builtin:
+            for match in matches:
+                print('  %-20s %s' % (match,
+                                      self.cli.get_command_description(match)))
+        else:
+            if cmdlist[0] in self.builtin:
+                command = cmdlist[1]
+            else:
+                command = cmdlist[0]
+            if self.cli.get_attributes(command) != []:
+                for match in matches:
+                    description = self.cli.get_attribute_description(command,
+                                                                     match)
+                    mandatory = self.cli.get_mandatory(command, match)
+
+                    if mandatory:
+                        print('  %-20s %s (MANDATORY)' % (match, description))
+                    else:
+                        print('  %-20s %s' % (match, description))
+
+        print(self.prompt, line, sep='', end='', flush=True)
 
     def loop(self) -> None:
         """
@@ -287,9 +313,10 @@ class CliHandler():
 
         readline.set_completer(self.complete)
 
-        # Tab and ? will do completion
-        readline.parse_and_bind('tab' + ': complete')
-        readline.parse_and_bind('?' + ': complete')
+        readline.parse_and_bind('tab: complete')
+        readline.parse_and_bind('?: complete')
+        readline.parse_and_bind('"\\C-l": clear-screen')
+        readline.set_completion_display_matches_hook(self.print_suggestions)
 
         line = input(self.prompt)
         print(self.execute(line), end='')
