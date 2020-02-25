@@ -32,9 +32,15 @@ class CliHandler():
         self.prompt = prompt
         self.cli = CliParser(model)
         self.builtin = ['no', 'show', 'help', 'history', 'quit']
-        self.modifiers = ['|', 'grep']
+        self.modifiers = ['|']
         self.node_name = ''
         self.commands = self.cli.get_commands()
+
+        readline.set_completer(self.complete)
+        readline.parse_and_bind('tab: complete')
+        readline.parse_and_bind('?: complete')
+        readline.parse_and_bind('"\\C-l": clear-screen')
+        readline.set_completion_display_matches_hook(self.print_suggestions)
 
         if banner != '':
             print(banner)
@@ -276,7 +282,13 @@ class CliHandler():
             return Rest.post(line, self.token, url=self.url, modifier=modifier)
         return 'I have no idea what to do with this command'
 
-    def print_suggestions(self, substitution, matches, longest_match_length):
+    def print_suggestions(self, substitution: str, matches: list,
+                          longest_match_length: int) -> None:
+        """
+        Print helptexts for commands and arguments.
+
+        """
+
         line = readline.get_line_buffer()
         cmdlist = line.split(' ')
 
@@ -310,13 +322,6 @@ class CliHandler():
         """
 
         self.old_completer = readline.get_completer()
-
-        readline.set_completer(self.complete)
-
-        readline.parse_and_bind('tab: complete')
-        readline.parse_and_bind('?: complete')
-        readline.parse_and_bind('"\\C-l": clear-screen')
-        readline.set_completion_display_matches_hook(self.print_suggestions)
 
         line = input(self.prompt)
         print(self.execute(line), end='')
