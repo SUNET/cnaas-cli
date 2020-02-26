@@ -223,7 +223,7 @@ class CliHandler():
             if self.cli.get_mandatory(command, attr):
                 print('Missing mandatory attribute: ' + attr)
 
-        return False
+        return True
 
     def strip(self, command: str) -> str:
         """
