@@ -184,6 +184,7 @@ class CliHandler():
         Find out if this is a valid command or not.
         """
 
+        res = True
         line = line.rstrip()
 
         if self.is_help(line) or self.is_show(line):
@@ -222,8 +223,9 @@ class CliHandler():
                     continue
             if self.cli.get_mandatory(command, attr):
                 print('Missing mandatory attribute: ' + attr)
+                res = False
 
-        return True
+        return res
 
     def strip(self, command: str) -> str:
         """
