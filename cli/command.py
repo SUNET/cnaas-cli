@@ -184,7 +184,7 @@ class CliHandler():
         Find out if this is a valid command or not.
         """
 
-        line = self.strip(line)
+        line = line.rstrip()
 
         if self.is_help(line) or self.is_show(line):
             return True
