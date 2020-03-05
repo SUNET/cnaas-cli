@@ -12,8 +12,8 @@ def handler_sigint(signal_received, frame):
     Handle Ctrl+C
 
     """
-
-    pass
+    print('\nGoodbye!')
+    sys.exit(0)
 
 
 def usage():
@@ -67,7 +67,7 @@ CNaaS - Command Line Interface\n
     signal(SIGINT, handler_sigint)
 
     try:
-        opts, args = getopt.getopt(argv, 'u:t:')
+        opts, args = getopt.getopt(argv, 'u:t:n')
     except getopt.GetoptError:
         usage(argv)
     for opt, arg in opts:
@@ -75,6 +75,8 @@ CNaaS - Command Line Interface\n
             url = arg
         if opt == '-t':
             token = arg
+        if opt == '-n':
+            banner = ''
 
     if token == '':
         usage()
