@@ -9,22 +9,34 @@ class CliTests(unittest.TestCase):
             'sync hostname test dry_run True force True',
             'show device id 123',
             'show job id 123',
-            'device id 123 hostname test device_type test platform test'
+            'device id 123 hostname test device_type test platform test',
+            'device_init id 123 hostname test device_type test',
+            'templates action REFRESH',
+            'settings action REFRESH',
+            'show mgmtdomains',
+            'show linknets',
+            'show devices',
+            'show version',
+            'show history',
+            'show history | grep history',
         ]
 
         self.invalid_commands = [
             'sync 9',
             'test test test',
             'device',
-            'device 123 hostname test'
+            'device 123 hostname test',
+            'devices'
         ]
 
         self.help_commands = [
-            'help devices'
+            'help devices',
+            'help'
         ]
 
         self.no_commands = [
             'no device id 9'
+            'no device id 123 hostname test device_type test platform test'
         ]
 
         self.c = CliHandler('http://localhost')
