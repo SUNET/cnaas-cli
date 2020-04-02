@@ -22,9 +22,8 @@ cli:
       name: 'devices'
       description: 'Handles devices'
       url: '/devices'
-      attributes:
       methods:
-        - name: "get"
+        - name: 'get'
 
   - command:
       name: 'device'
@@ -35,85 +34,82 @@ cli:
           mandatory: true
           description: 'Device ID'
           url_suffix: true
-        - name: "hostname"
-          mandatory: true
+        - name: 'hostname'
+          mandatory: false
           description: 'Hostname'
           url_suffix: false
-        - name: "site_id"
+        - name: 'site_id'
           mandatory: false
           description: 'Site ID'
           url_suffix: false
-        - name: "description"
+        - name: 'description'
           mandatory: false
           description: 'Description'
           url_suffix: false
-        - name: "management_ip"
+        - name: 'management_ip'
           mandatory: false
           description: 'Management IP'
           url_suffix: false
-        - name: "dhcp_ip"
+        - name: 'dhcp_ip'
           mandatory: false
           description: 'DHCP IP'
           url_suffix: false
-        - name: "infra_ip"
+        - name: 'infra_ip'
           mandatory: false
           description: 'Infra IP'
           url_suffix: false
-        - name: "oob_ip"
+        - name: 'oob_ip'
           mandatory: false
           description: 'OOB IP'
           url_suffix: false
-        - name: "serial"
+        - name: 'serial'
           mandatory: false
           description: 'Serial #'
           url_suffix: false
-        - name: "ztp_mac"
+        - name: 'ztp_mac'
           mandatory: false
           description: 'MAC adress'
           url_suffix: false
-        - name: "platform"
-          mandatory: true
+        - name: 'platform'
+          mandatory: false
           description: 'Platform'
           url_suffix: false
-        - name: "vendor"
+        - name: 'vendor'
           mandatory: false
           description: 'Vendor'
           url_suffix: false
-        - name: "model"
+        - name: 'model'
           mandatory: false
           description: 'Model'
           url_suffix: false
-        - name: "os_version"
+        - name: 'os_version'
           mandatory: false
           description: 'Version'
           url_suffix: false
-        - name: "synchronized"
+        - name: 'synchronized'
           mandatory: false
           description: 'Synchronized'
           url_suffix: false
-        - name: "state"
+        - name: 'state'
           mandatory: false
           description: 'Device state'
           url_suffix: false
-        - name: "device_type"
-          mandatory: true
+        - name: 'device_type'
+          mandatory: false
           description: 'Type'
           url_suffix: false
-        - name: "confhash"
+        - name: 'confhash'
           mandatory: false
           description: 'Config hash'
           url_suffix: false
-        - name: "last_seen"
+        - name: 'last_seen'
           mandatory: false
           description: 'Seen'
           url_suffix: false
-        - name: "port"
+        - name: 'port'
           mandatory: false
           description: 'Port'
           url_suffix: false
-      methods:
-        - name: "get"
-        - name: "post"
 
   - command:
       name: 'sync'
@@ -138,12 +134,12 @@ cli:
         - name: 'force'
           mandatory: true
           description: 'force run'
-        - name: "resync"
-          description: "Sync already synced devices"
+        - name: 'resync'
+          description: 'Sync already synced devices'
           mandatory: false
           url_suffix: false
       methods:
-        - name: "post"
+        - name: 'post'
 
   - command:
       name: 'jobs'
@@ -173,31 +169,31 @@ cli:
         - name: 'id'
           mandatory: true
           description: 'Job ID'
-        - name: "ipv4_network"
+        - name: 'ipv4_network'
           mandatory: true
           description: 'IPv4 Network'
-        - name: "device_a_id"
+        - name: 'device_a_id'
           mandatory: true
           description: 'Device A ID'
-        - name: "device_a_ip"
+        - name: 'device_a_ip'
           mandatory: true
           description: 'Device A IP'
-        - name: "device_a_port"
+        - name: 'device_a_port'
           mandatory: false
           description: 'Device A port'
-        - name: "device_b_id"
+        - name: 'device_b_id'
           mandatory: true
           description: 'Device B ID'
-        - name: "device_b_ip"
+        - name: 'device_b_ip'
           mandatory: true
           description: 'Device B IP'
-        - name: "device_b_port"
+        - name: 'device_b_port'
           mandatory: false
           description: 'Device B port'
-        - name: "site_id"
+        - name: 'site_id'
           mandatory: false
           description: 'Site ID'
-        - name: "description"
+        - name: 'description'
           mandatory: false
           description: 'Description'
       methods:
@@ -212,36 +208,36 @@ cli:
         - name: 'id'
           mandatory: true
           description: 'Job ID'
-        - name: "ipv4_gw"
+        - name: 'ipv4_gw'
           mandatory: true
           description: 'IPv4 gateway'
-        - name: "device_a_id"
+        - name: 'device_a_id'
           mandatory: true
           description: 'Device A ID'
-        - name: "device_a_ip"
+        - name: 'device_a_ip'
           mandatory: true
           description: 'Device A IP'
           mandatory: true
           description: 'Device B ID'
-        - name: "device_b_ip"
+        - name: 'device_b_ip'
           mandatory: true
           description: 'Device B IP'
-        - name: "site_id"
+        - name: 'site_id'
           mandatory: false
           description: 'Site ID'
-        - name: "description"
+        - name: 'description'
           mandatory: false
           description: 'Description'
-        - name: "vlan"
+        - name: 'vlan'
           mandatory: true
           description: 'VLAN'
-        - name: "esi_mac"
+        - name: 'esi_mac'
           mandatory: false
           description: 'ESI MAC'
-        - name: "device_a"
+        - name: 'device_a'
           mandatory: false
           description: 'Device A hostname'
-        - name: "device_b"
+        - name: 'device_b'
           mandatory: false
           description: 'Device B hostname'
       methods:

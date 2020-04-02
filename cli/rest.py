@@ -24,7 +24,6 @@ class Rest():
 
         args = line.rstrip().split(' ')[1:]
         command = line.split(' ')[0]
-
         url = url + cls.cli.get_url(command)
 
         # Make a dict of arguments and values

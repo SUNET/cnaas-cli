@@ -1,4 +1,5 @@
 import os
+import re
 import sys
 import string
 import readline
@@ -31,8 +32,9 @@ class CliHandler():
         self.token = token
         self.prompt = prompt
         self.cli = CliParser(model)
-        self.builtin = ['no', 'show', 'help', 'history', 'quit']
+        self.builtin = ['update', 'no', 'show', 'help', 'history', 'quit']
         self.modifiers = ['|']
+        self.modifiers_commands = ['grep']
         self.node_name = ''
         self.commands = self.cli.get_commands()
 
@@ -55,7 +57,7 @@ class CliHandler():
 
         line = readline.get_line_buffer().lstrip()
 
-        if line.startswith('no') or line.startswith('show'):
+        if line.startswith('no') or line.startswith('show') or line.startswith('update'):
             line = ' '.join(line.split(' ')[1:])
 
         return line, line.split(' ')[-1]
@@ -70,7 +72,9 @@ class CliHandler():
         line, last = self.read_line()
         commandlen = len(line.split(' '))
 
-        if commandlen < 2 and not line.endswith(' '):
+        if re.match(r'.+\|.*', line):
+            commands = self.modifiers_commands
+        elif commandlen < 2 and not line.endswith(' '):
             commands = self.commands + self.builtin
         else:
             commands = self.cli.get_attributes(self.node_name)
@@ -85,7 +89,7 @@ class CliHandler():
         except IndexError:
             return None
 
-    def __helptext_all_commands(self):
+    def helptext_all_commands(self):
         """
         Print helptexts for all commands
 
@@ -107,7 +111,7 @@ class CliHandler():
 
         return '\n'
 
-    def __helptext_command(self, line):
+    def helptext_command(self, line):
         """
         Print helptext for a single command
         """
@@ -128,9 +132,9 @@ class CliHandler():
         """
 
         if line.rstrip() == 'help':
-            return self.__helptext_all_commands()
+            return self.helptext_all_commands()
 
-        return self.__helptext_command(line)
+        return self.helptext_command(line)
 
     def builtin_cmd(self, command: str) -> str:
         """
@@ -139,7 +143,7 @@ class CliHandler():
         """
 
         command = command.split(' ')[0]
-        if command == 'history':
+        if command == 'show history':
             for i in range(readline.get_current_history_length()):
                 print('  ' + readline.get_history_item(i + 1))
         elif command == 'help':
@@ -159,12 +163,22 @@ class CliHandler():
 
         return False
 
-    def is_no(self, command: str) -> bool:
+    def is_delete(self, command: str) -> bool:
         """
-        Find out whether we have a no command or not.
+        Find out whether we have a delete command or not.
         """
 
         if command.split(' ')[0] == 'no':
+            return True
+
+        return False
+
+    def is_update(self, command: str) -> bool:
+        """
+        Find out whether we have a update command or not.
+        """
+
+        if command.split(' ')[0] == 'update':
             return True
 
         return False
@@ -175,6 +189,16 @@ class CliHandler():
         """
 
         if 'help' in line:
+            return True
+
+        return False
+
+    def is_history(self, line: str) -> bool:
+        """
+        Find out whether we have a history command or not.
+        """
+
+        if 'history' in line:
             return True
 
         return False
@@ -225,6 +249,9 @@ class CliHandler():
                 print('Missing mandatory attribute: ' + attr)
                 res = False
 
+        if attributes is None:
+            res = False
+
         return res
 
     def strip(self, command: str) -> str:
@@ -249,40 +276,31 @@ class CliHandler():
         line = line.split('|')[0].lstrip().rstrip()
         command = line.split(' ')[0]
 
-        # Empty command, silently ignore
         if line == '':
             return ''
-
-        # Quit?
-        if line == 'quit':
+        elif line == 'quit':
             print('Goodbye!')
             sys.exit(0)
-
-        if line == 'history':
-            return self.builtin_cmd('history')
-
-        # Valid command?
-        if not self.validate(line):
+        elif not self.validate(line):
             return 'Invalid command: %s\n\n' % line
-
-        if self.is_show(line):
-            return Rest.get(self.strip(line), self.token, self.url,
-                            modifier=modifier)
-        elif self.is_no(line):
-            return Rest.delete(self.strip(line), self.token, self.url,
-                               modifier=modifier)
         elif self.is_help(line):
             return self.helptext(line)
+        elif self.is_history(line):
+            return self.builtin_cmd('history')
+        elif self.is_show(line):
+            return Rest.get(self.strip(line), self.token, self.url,
+                            modifier=modifier)
+        elif self.is_delete(line):
+            return Rest.delete(self.strip(line), self.token, self.url,
+                               modifier=modifier)
+        elif self.is_show(line):
+            return Rest.get(line, self.token, self.url,
+                            modifier=modifier)
+        elif self.is_update(line):
+            return Rest.put(self.strip(line), self.token, self.url,
+                            modifier=modifier)
         else:
-            if self.cli.get_methods(command) == ['get']:
-                return Rest.get(line, self.token, self.url,
-                                modifier=modifier)
-            elif self.cli.get_methods(command) == ['get', 'put']:
-                return Rest.put(line, self.token, self.url,
-                                modifier=modifier)
-
             return Rest.post(line, self.token, url=self.url, modifier=modifier)
-        return 'I have no idea what to do with this command'
 
     def print_suggestions(self, substitution: str, matches: list,
                           longest_match_length: int) -> None:
@@ -297,8 +315,21 @@ class CliHandler():
         print('')
         if len(cmdlist) == 1 or len(cmdlist) == 2 and cmdlist[0] in self.builtin:
             for match in matches:
-                print('  %-20s %s' % (match,
-                                      self.cli.get_command_description(match)))
+                if match == 'help':
+                    description = 'Print helptexts'
+                elif match == 'history':
+                    description = 'Print command history'
+                elif match == 'no':
+                    description = 'Disable the command that follows'
+                elif match == 'show':
+                    description = 'Display details'
+                elif match == 'update':
+                    description = 'Update the command that follows'
+                elif match == 'quit':
+                    description = 'Exit the CLI'
+                else:
+                    description = self.cli.get_command_description(match)
+                print('  %-20s %s' % (match, description))
         else:
             if cmdlist[0] in self.builtin:
                 command = cmdlist[1]
@@ -306,15 +337,20 @@ class CliHandler():
                 command = cmdlist[0]
             if self.cli.get_attributes(command) != []:
                 for match in matches:
-                    description = self.cli.get_attribute_description(command,
-                                                                     match)
+                    if match == '|':
+                        description = 'Command output pipe filters'
+                    else:
+                        description = self.cli.get_attribute_description(command,
+                                                                         match)
                     mandatory = self.cli.get_mandatory(command, match)
 
                     if mandatory:
-                        print('  %-20s %s (MANDATORY)' % (match, description))
+                        print('  %-20s %-20s (MANDATORY)' %
+                              (match, description))
                     else:
                         print('  %-20s %s' % (match, description))
 
+        print('  <cr>')
         print(self.prompt, line, sep='', end='', flush=True)
 
     def loop(self) -> None:
