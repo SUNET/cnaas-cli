@@ -302,3 +302,56 @@ cli:
           description: 'Configure interfaces'
       methods:
         - name: 'get'
+
+  - command:
+      name: 'download'
+      description: 'Download firmware images'
+      url: '/firmware'
+      attributes:
+        - name: 'url'
+          mandatory: true
+          description: 'URL to the firmware'
+        - name: 'sha1'
+          mandatory: true
+          description: 'SHA1 sum of the firmware'
+        - name: 'verify_tls'
+          mandatory: true
+          description: 'Ignore SSL certificate'
+      methods:
+        - name: 'get'
+        - name: 'post'
+
+  - command:
+      name: 'upgrade'
+      description: 'Upgrade firmware on switch'
+      url: '/firmware/upgrade'
+      attributes:
+        - name: 'url'
+          mandatory: true
+          description: 'URL to the firmware'
+        - name: 'filename'
+          mandatory: true
+          description: 'Firmware filename'
+        - name: 'hostname'
+          mandatory: false
+          description: 'Hostname of the switch to use'
+        - name: 'group'
+          mandatory: false
+          description: 'Group name'
+        - name: 'pre-flight'
+          mandatory: false
+          description: 'Do a pre-flight check'
+        - name: 'download'
+          mandatory: false
+          description: 'Download the firmware to the switch'
+        - name: 'activate'
+          mandatory: false
+          description: 'Activate the firmware'
+        - name: 'reboot'
+          mandatory: false
+          description: 'Reboot the swtich when done'
+        - name: 'start_at'
+          mandatory: false
+          description: 'Schedule the firmware upgrade'
+      methods:
+        - name: 'post'

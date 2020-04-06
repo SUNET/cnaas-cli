@@ -236,6 +236,21 @@ def prettyprint_groups(data: dict, name: str) -> str:
     return output
 
 
+def prettyprint_firmware(data: dict, name: str) -> str:
+    """
+    Prettyprint files
+    """
+
+    output = ''
+
+    for item in data['data']['files']:
+        output += '  ' + item
+        output += '\n'
+    output += '\n'
+
+    return output
+
+
 def prettyprint_version(data: dict, name: str) -> str:
     """
     Prettyprint version output
@@ -287,6 +302,8 @@ def prettyprint(data: dict, command: str, modifier: Optional[str] = '') -> str:
 
     if 'data' in data and 'jobs' in data['data']:
         output = prettyprint_jobs(data, command)
+    elif 'data' in data and 'files' in data['data']:
+        output = prettyprint_firmware(data, command)
     elif 'job_id' in data:
         output = prettyprint_job(data, command)
     elif 'groups' in data['data']:
