@@ -304,7 +304,7 @@ cli:
         - name: 'get'
 
   - command:
-      name: 'download'
+      name: 'copy'
       description: 'Download firmware images'
       url: '/firmware'
       attributes:
