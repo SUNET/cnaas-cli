@@ -264,7 +264,7 @@ class CliHandler():
             return ''
 
         # Quit?
-        if line == 'quit':
+        if line == 'quit' or line == 'exit':
             print('Goodbye!')
             sys.exit(0)
 
