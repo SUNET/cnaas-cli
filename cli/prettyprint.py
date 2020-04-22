@@ -320,7 +320,7 @@ def prettyprint_other(data: dict) -> str:
     if 'data' in data and isinstance(data['data'], str):
         return '  ' + data['data'] + '\n'
 
-    return ''
+    return '  Failed to execute command.\n\n'
 
 
 def prettyprint_groups(data: dict, name: str) -> str:
