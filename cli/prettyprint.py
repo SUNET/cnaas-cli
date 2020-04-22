@@ -115,10 +115,13 @@ def prettyprint_devices(data: dict) -> str:
         failed = devices[diff]['failed']
         reason = devices[diff]['reason']
 
+        if reason is not None:
+            reason = '\033[91m %s\033[0m' % str(reason)
+
         output += '\n' + get_hline()
         output += '  Device(s): %s\n' % ', '.join(hostnames)
         output += '  Failed: %s\n' % str(failed)
-        output += '  Reason: \033[91m %s\033[0m\n' % str(reason)
+        output += '  Reason: %s\n' % reason
         output += '  Diff: \n'
         output += diff
 
