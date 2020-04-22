@@ -23,6 +23,40 @@ def prettyprint_error(data: dict) -> str:
     return '\nError: \033[91m %s\033[0m\n\n' % error
 
 
+def prettyprint_device(data: dict) -> str:
+    """
+    Prettyprint a single device.
+    """
+
+    output = ''
+    device_data = data['data']['devices'][0]
+
+    output += '  %-30s %-30d\n' % ('ID:', device_data['id'])
+    output += '  %-30s %-30s\n' % ('Hostname:', device_data['hostname'])
+    output += '  %-30s %-30s\n' % ('Site iD:', device_data['site_id'])
+    output += '  %-30s %-30s\n' % ('Description:', device_data['description'])
+    output += '  %-30s %-30s\n' % ('Managemnt IP:', device_data['management_ip'])
+    output += '  %-30s %-30s\n' % ('DHCP IP:', device_data['dhcp_ip'])
+    output += '  %-30s %-30s\n' % ('Infra IP:', device_data['infra_ip'])
+    output += '  %-30s %-30s\n' % ('OOP IP:', device_data['oob_ip'])
+    output += '  %-30s %-30s\n' % ('Serial:', device_data['serial'])
+    output += '  %-30s %-30s\n' % ('ZTP MAC:', device_data['ztp_mac'])
+    output += '  %-30s %-30s\n' % ('Platform:', device_data['platform'])
+    output += '  %-30s %-30s\n' % ('Vendor:', device_data['vendor'])
+    output += '  %-30s %-30s\n' % ('Model:', device_data['model'])
+    output += '  %-30s %-30s\n' % ('OS version:', device_data['os_version'])
+    output += '  %-30s %-30s\n' % ('Hostname:', device_data['hostname'])
+    output += '  %-30s %-30s\n' % ('Synchronized:', device_data['synchronized'])
+    output += '  %-30s %-30s\n' % ('State:', device_data['state'])
+    output += '  %-30s %-30s\n' % ('Device type:', device_data['device_type'])
+    output += '  %-30s %-30s\n' % ('Configuration hash:', device_data['confhash'])
+    output += '  %-30s %-30s\n' % ('Last seen:', device_data['last_seen'])
+    output += '  %-30s %-30s\n' % ('Port:', device_data['port'])
+    output += '\n'
+
+    return output
+
+
 def prettyprint_job(data: dict, command: str) -> str:
     """
     Prettyprinter for commands that start jobs
@@ -365,8 +399,6 @@ def prettyprint(data: dict, command: str, modifier: Optional[str] = '') -> str:
     # A few commands need a little special treatment
     if command == 'job':
         command = 'jobs'
-    if command == 'device':
-        command = 'devices'
 
     if 'data' in data and 'jobs' in data['data']:
         output = prettyprint_jobs(data, command)
@@ -378,6 +410,8 @@ def prettyprint(data: dict, command: str, modifier: Optional[str] = '') -> str:
         output = prettyprint_groups(data, 'groups')
     elif 'data' in data and 'version' in data['data']:
         output = prettyprint_version(data, 'version')
+    elif 'data' in data and command == 'device':
+        output = prettyprint_device(data)
     elif 'data' in data and command in data['data']:
         output = prettyprint_command(data, command)
     elif 'status' in data and data['status'] == 'error':
