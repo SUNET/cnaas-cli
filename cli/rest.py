@@ -68,7 +68,8 @@ class Rest():
             res = requests.get(url, headers=headers, json=args, verify=False)
 
             if res.status_code != 200:
-                return 'Could execute command.\n\n'
+                return prettyprint(res.json(), command)
+
         except Exception as e:
             return 'Could not reach CNaaS NMS, wrong URL?\n\n'
 
@@ -91,7 +92,7 @@ class Rest():
             res = requests.post(url, headers=headers, json=args, verify=False)
 
             if res.status_code != 200:
-                return 'Could not execute command.\n\n'
+                return prettyprint(res.json(), command)
 
         except Exception as e:
             return 'Could not reach CNaaS NMS, wrong URL?\n\n'
@@ -115,7 +116,7 @@ class Rest():
             res = requests.put(url, headers=headers, json=args, verify=False)
 
             if res.status_code != 200:
-                return 'Could not execute command.\n\n'
+                return prettyprint(res.json(), command)
 
         except Exception as e:
             return 'Could not reach CNaaS NMS, wrong URL?\n\n'
@@ -140,7 +141,7 @@ class Rest():
                                   verify=False)
 
             if res.status_code != 200:
-                return 'Could not execute command.\n\n'
+                return prettyprint(res.json(), command)
 
         except Exception as e:
             return 'Could not reach CNaaS NMS, wrong URL?\n\n'

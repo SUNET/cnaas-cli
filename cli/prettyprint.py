@@ -8,6 +8,21 @@ job_fields = ['id', 'status', 'start_time', 'finish_time', 'function_name',
               'scheduled_by', 'exception']
 
 
+def prettyprint_error(data: dict) -> str:
+    """
+    Print generic errors returned from the API.
+    """
+
+    error = 'Could not execute command\n'
+
+    if 'message' in data:
+        error += data['message']
+    else:
+        error += 'Unknown error'
+
+    return '\nError: \033[91m %s\033[0m\n\n' % error
+
+
 def prettyprint_job(data: dict, command: str) -> str:
     """
     Prettyprinter for commands that start jobs
@@ -61,17 +76,20 @@ def get_devices_data(data):
     for device in devices:
         hostname = device
         failed = devices[device]['failed']
+        reason = None
 
         for task in devices[device]['job_tasks']:
-            if task['task_name'] != 'Sync device config':
-                continue
+            if task['failed']:
+                if task['result']:
+                    reason = task['result']
             if task['diff'] is not None:
                 diff = prettyprint_diff(lrstrip(task['diff']))
 
         if diff not in diffs:
             diffs[diff] = {
                 'hostnames': [hostname],
-                'failed': failed
+                'failed': failed,
+                'reason': reason
             }
         else:
             diffs[diff]['hostnames'].append(hostname)
@@ -95,10 +113,12 @@ def prettyprint_devices(data: dict) -> str:
     for diff in devices:
         hostnames = devices[diff]['hostnames']
         failed = devices[diff]['failed']
+        reason = devices[diff]['reason']
 
         output += '\n' + get_hline()
         output += '  Device(s): %s\n' % ', '.join(hostnames)
         output += '  Failed: %s\n' % str(failed)
+        output += '  Reason: \033[91m %s\033[0m\n' % str(reason)
         output += '  Diff: \n'
         output += diff
 
@@ -114,7 +134,7 @@ def prettyprint_message(data: dict) -> str:
     job_data = data['data']['jobs'][0]
 
     output = '  Comment: %s\n' % job_data['comment']
-    output += '  Message: %s\n' % job_data['result']['message']
+    output += '  Message: \033[91m %s\033[0m\n' % job_data['result']['message']
 
     return output
 
@@ -127,11 +147,12 @@ def prettyprint_jobs(data: dict, command: str) -> str:
 
     output = ''
     jobs_data = data['data']['jobs']
+    error = None
     jobs_data.reverse()
 
     for field in job_fields:
         if field == 'id' or field == 'status':
-            output += ('%5s\t| ' % field)
+            output += '%5s\t| ' % field
         else:
             output += '%25s\t| ' % field
 
@@ -140,6 +161,12 @@ def prettyprint_jobs(data: dict, command: str) -> str:
 
     for job in jobs_data:
         for key in job:
+            if key == 'result':
+                if not job['result']:
+                    continue
+                if 'error' in job['result']:
+                    error = job['result']['error']
+
             # Only print certain fields
             if key not in job_fields:
                 continue
@@ -169,6 +196,9 @@ def prettyprint_jobs(data: dict, command: str) -> str:
         output += prettyprint_devices(data)
     elif 'message' in job_data:
         output += prettyprint_message(data)
+
+    if error:
+        output += 'Exception: \033[91m %s\033[0m\n' % error
 
     return output + '\n'
 
@@ -293,7 +323,6 @@ def prettyprint(data: dict, command: str, modifier: Optional[str] = '') -> str:
     Prettyprint the JSON data we get back from the API
 
     """
-
     output = ''
 
     # A few commands need a little special treatment
@@ -308,12 +337,14 @@ def prettyprint(data: dict, command: str, modifier: Optional[str] = '') -> str:
         output = prettyprint_firmware(data, command)
     elif 'job_id' in data:
         output = prettyprint_job(data, command)
-    elif 'groups' in data['data']:
+    elif 'data' in data and 'groups' in data['data']:
         output = prettyprint_groups(data, 'groups')
-    elif 'version' in data['data']:
+    elif 'data' in data and 'version' in data['data']:
         output = prettyprint_version(data, 'version')
     elif 'data' in data and command in data['data']:
         output = prettyprint_command(data, command)
+    elif 'status' in data and data['status'] == 'error':
+        output = prettyprint_error(data)
     else:
         output = prettyprint_other(data)
 
