@@ -12,8 +12,8 @@ def handler_sigint(signal_received, frame):
     Handle Ctrl+C
 
     """
-
-    pass
+    print('\nGoodbye!')
+    sys.exit(0)
 
 
 def usage():
