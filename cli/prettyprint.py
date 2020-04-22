@@ -126,6 +126,8 @@ def prettyprint_jobs(data: dict, command: str) -> str:
     """
 
     output = ''
+    jobs_data = data['data']['jobs']
+    jobs_data.reverse()
 
     for field in job_fields:
         if field == 'id' or field == 'status':
@@ -136,7 +138,7 @@ def prettyprint_jobs(data: dict, command: str) -> str:
     output += '\n' + get_hline(newline=True)
     nr_jobs = len(data['data']['jobs'])
 
-    for job in data['data']['jobs']:
+    for job in jobs_data:
         for key in job:
             # Only print certain fields
             if key not in job_fields:
