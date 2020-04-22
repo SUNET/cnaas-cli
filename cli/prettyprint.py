@@ -142,9 +142,46 @@ def prettyprint_message(data: dict) -> str:
     return output
 
 
-def prettyprint_jobs(data: dict, command: str) -> str:
+def prettyprint_jobs_single(data: dict) -> str:
     """
-    Prettyprinter for jobs output
+    Prettyprinter for single job output
+
+    """
+
+    output = ''
+    job_data = data['data']['jobs'][0]
+    result = 'None'
+    exception = 'None'
+
+    if job_data['exception'] is not None and 'message' in job_data['exception']:
+        exception = job_data['exception']['message']
+    if job_data['exception'] is None and 'message' in job_data['result']:
+        result = job_data['result']['message']
+
+    output += '  %-30s %-50d\n' % ('ID:', job_data['id'])
+    output += '  %-30s %-50s\n' % ('Scheduled time:', job_data['scheduled_time'])
+    output += '  %-30s %-50s\n' % ('Start time:', job_data['start_time'])
+    output += '  %-30s %-30s\n' % ('Finish time: ', job_data['finish_time'])
+    output += '  %-30s %-30s\n' % ('Scheduled by:', job_data['scheduled_by'])
+    output += '  %-30s %-30s\n' % ('Comment:', job_data['comment'])
+    output += '  %-30s %-30s\n' % ('Function name:', job_data['function_name'])
+    output += '  %-30s %-30s\n' % ('Next job ID:', job_data['next_job_id'])
+    output += '  %-30s %-30s\n' % ('Result:', lrstrip(result))
+    output += '  %-30s %-30s\n' % ('Exception:', lrstrip(exception))
+
+    if 'devices' in job_data['result']:
+        output += prettyprint_devices(data)
+    elif 'message' in job_data['result']:
+        output += prettyprint_message(data)
+
+    output += '\n'
+
+    return output
+
+
+def prettyprint_jobs_all(data: dict) -> str:
+    """
+    Prettyprinter for all jobs output
 
     """
 
@@ -160,7 +197,6 @@ def prettyprint_jobs(data: dict, command: str) -> str:
             output += '%25s\t| ' % field
 
     output += '\n' + get_hline(newline=True)
-    nr_jobs = len(data['data']['jobs'])
 
     for job in jobs_data:
         for key in job:
@@ -187,23 +223,21 @@ def prettyprint_jobs(data: dict, command: str) -> str:
         output += '\n'
     output += '\n'
 
-    # If got a single job, print more information
+    return output
+
+
+def prettyprint_jobs(data: dict, command: str) -> str:
+    """
+    Prettyprinter for jobs output
+
+    """
+
+    nr_jobs = len(data['data']['jobs'])
+
     if nr_jobs > 1:
-        return output
+        return prettyprint_jobs_all(data)
 
-    job_data = data['data']['jobs'][0]['result']
-
-    if job_data is None:
-        pass
-    elif 'devices' in job_data:
-        output += prettyprint_devices(data)
-    elif 'message' in job_data:
-        output += prettyprint_message(data)
-
-    if error:
-        output += 'Exception: \033[91m %s\033[0m\n' % error
-
-    return output + '\n'
+    return prettyprint_jobs_single(data)
 
 
 def prettyprint_command(data: dict, command: str) -> str:
