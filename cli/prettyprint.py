@@ -20,7 +20,7 @@ def prettyprint_error(data: dict) -> str:
     else:
         error += 'Unknown error'
 
-    return '\nError: \033[91m %s\033[0m\n\n' % error
+    return '\n\033[91m%s\033[0m\n\n' % error
 
 
 def prettyprint_device(data: dict) -> str:
