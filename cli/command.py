@@ -31,7 +31,7 @@ class CliHandler():
         self.token = token
         self.prompt = prompt
         self.cli = CliParser(model)
-        self.builtin = ['no', 'show', 'help', 'history', 'quit']
+        self.builtin = ['no', 'show', 'help', 'history', 'quit', 'update']
         self.modifiers = ['|']
         self.node_name = ''
         self.commands = self.cli.get_commands()
@@ -55,7 +55,7 @@ class CliHandler():
 
         line = readline.get_line_buffer().lstrip()
 
-        if line.startswith('no') or line.startswith('show'):
+        if line.startswith('no') or line.startswith('show') or line.startswith('update'):
             line = ' '.join(line.split(' ')[1:])
 
         return line, line.split(' ')[-1]
@@ -169,6 +169,16 @@ class CliHandler():
 
         return False
 
+    def is_update(self, command: str) -> bool:
+        """
+        Find out whether we have an update command or not.
+        """
+
+        if command.split(' ')[0] == 'update':
+            return True
+
+        return False
+
     def is_help(self, line: str) -> bool:
         """
         Find out whether we have a help command or not.
@@ -271,6 +281,9 @@ class CliHandler():
         elif self.is_no(line):
             return Rest.delete(self.strip(line), self.token, self.url,
                                modifier=modifier)
+        elif self.is_update(line):
+            return Rest.put(self.strip(line), self.token, self.url,
+                            modifier=modifier)
         elif self.is_help(line):
             return self.helptext(line)
         else:
@@ -297,8 +310,21 @@ class CliHandler():
         print('')
         if len(cmdlist) == 1 or len(cmdlist) == 2 and cmdlist[0] in self.builtin:
             for match in matches:
-                print('  %-20s %s' % (match,
-                                      self.cli.get_command_description(match)))
+                if match == 'help':
+                    description = 'Print helptexts'
+                elif match == 'history':
+                    description = 'Print command history'
+                elif match == 'no':
+                    description = 'Disable the command that follows'
+                elif match == 'show':
+                    description = 'Display details'
+                elif match == 'update':
+                    description = 'Update the command that follows'
+                elif match == 'exit' or match == 'quit':
+                    description = 'Exit the CLI'
+                else:
+                    description = self.cli.get_command_description(match)
+                print('  %-20s %s' % (match, description))
         else:
             if cmdlist[0] in self.builtin:
                 command = cmdlist[1]
