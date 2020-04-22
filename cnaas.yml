@@ -304,7 +304,7 @@ cli:
         - name: 'get'
 
   - command:
-      name: 'copy'
+      name: 'download'
       description: 'Download firmware images'
       url: '/firmware'
       attributes:
@@ -322,7 +322,7 @@ cli:
         - name: 'post'
 
   - command:
-      name: 'upgrade'
+      name: 'firmware_upgrade'
       description: 'Upgrade firmware on switch'
       url: '/firmware/upgrade'
       attributes:
