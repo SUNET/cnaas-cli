@@ -3,17 +3,7 @@ import getopt
 
 from urllib.parse import urlparse
 from cli.command import CliHandler
-from cli.parser import CliParser
 from signal import signal, SIGINT
-
-
-def handler_sigint(signal_received, frame):
-    """
-    Handle Ctrl+C
-
-    """
-    print('\nGoodbye!')
-    sys.exit(0)
 
 
 def usage():
@@ -63,8 +53,6 @@ CNaaS - Command Line Interface\n
 
 
 """
-
-    signal(SIGINT, handler_sigint)
 
     try:
         opts, args = getopt.getopt(argv, 'u:t:')

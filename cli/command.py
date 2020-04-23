@@ -1,5 +1,8 @@
 import os
+import re
 import sys
+import time
+import signal
 import string
 import readline
 
@@ -33,6 +36,7 @@ class CliHandler():
         self.cli = CliParser(model)
         self.builtin = ['no', 'show', 'help', 'history', 'quit', 'update']
         self.modifiers = ['|']
+        self.modifiers_commands = ['grep', 'monitor']
         self.node_name = ''
         self.commands = self.cli.get_commands()
 
@@ -70,7 +74,9 @@ class CliHandler():
         line, last = self.read_line()
         commandlen = len(line.split(' '))
 
-        if commandlen < 2 and not line.endswith(' '):
+        if re.match(r'.+\|.*', line):
+            commands = self.modifiers_commands
+        elif commandlen < 2 and not line.endswith(' '):
             commands = self.commands + self.builtin
         else:
             commands = self.cli.get_attributes(self.node_name)
@@ -352,7 +358,23 @@ class CliHandler():
         self.old_completer = readline.get_completer()
 
         line = input(self.prompt)
-        print(self.execute(line), end='')
+
+        if re.match(r'.*\|*monitor', line):
+            if not line.startswith('show '):
+                print('Can only monitor show commands.')
+            else:
+                while True:
+                    line = line.partition('|')[0].rstrip()
+                    try:
+                        print(chr(27) + "[2J")
+                        output = self.execute(line)
+                        output += '\n\nHit Ctrl+C to abort'
+                        print(output)
+                        time.sleep(2)
+                    except KeyboardInterrupt:
+                        break
+        else:
+            print(self.execute(line), end='')
 
         readline.set_completer(self.old_completer)
         readline.write_history_file('history.txt')
