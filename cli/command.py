@@ -112,9 +112,10 @@ class CliHandler():
         print('  %-20s Print command history' % 'history')
         print('  %-20s Show the command that follows' % 'show')
         print('  %-20s Quit the CLI' % 'quit')
-        print('')
-        print('Other commands:', end='')
-        print('')
+        print('\nModifiers')
+        print('  %-20s Grep after a given string' % 'grep')
+        print('  %-20s Monitor the output of a show command' % 'monitor')
+        print('\nOther commands:')
 
         for command in self.cli.get_commands():
             description = self.cli.get_command_description(command)
