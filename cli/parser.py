@@ -144,6 +144,45 @@ class CliParser():
 
         return False
 
+    def get_not_show_only(self) -> list:
+        """
+        Return true if this command is a show command only
+
+        """
+        commands = []
+
+        for cmd in self.cli.cli:
+            if not cmd.command.show_only:
+                commands.append(cmd.command.name)
+
+        return commands
+
+    def get_show(self) -> list:
+        """
+        Return true if this command can do show
+
+        """
+        commands = []
+
+        for cmd in self.cli.cli:
+            if not cmd.command.no_show:
+                commands.append(cmd.command.name)
+
+        return commands
+
+    def get_update(self) -> list:
+        """
+        Return true if this command can be updated
+
+        """
+        commands = []
+
+        for cmd in self.cli.cli:
+            if cmd.command.update:
+                commands.append(cmd.command.name)
+
+        return commands
+
     def get_url_suffix(self, command: str, attribute: str) -> bool:
         """
         Find out if an argument should be a suffix to the URL or not

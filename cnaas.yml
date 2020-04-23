@@ -4,6 +4,7 @@ cli:
       name: 'device_init'
       description: 'Initializd a device'
       url: '/device_init'
+      no_show: true
       attributes:
         - name: 'id'
           mandatory: true
@@ -20,134 +21,91 @@ cli:
       name: 'devices'
       description: 'Handles devices'
       url: '/devices'
-      attributes:
+      show_only: true
 
   - command:
       name: 'device'
       description: 'Handles a single device'
       url: '/device'
+      update: true
       attributes:
         - name: 'id'
           mandatory: true
           description: 'Device ID'
           url_suffix: true
         - name: "hostname"
-          mandatory: true
           description: 'Hostname'
-          url_suffix: false
         - name: "site_id"
-          mandatory: false
           description: 'Site ID'
-          url_suffix: false
         - name: "description"
-          mandatory: false
           description: 'Description'
-          url_suffix: false
         - name: "management_ip"
-          mandatory: false
           description: 'Management IP'
-          url_suffix: false
         - name: "dhcp_ip"
-          mandatory: false
           description: 'DHCP IP'
-          url_suffix: false
         - name: "infra_ip"
-          mandatory: false
           description: 'Infra IP'
-          url_suffix: false
         - name: "oob_ip"
-          mandatory: false
           description: 'OOB IP'
-          url_suffix: false
         - name: "serial"
-          mandatory: false
           description: 'Serial #'
-          url_suffix: false
         - name: "ztp_mac"
-          mandatory: false
           description: 'MAC adress'
-          url_suffix: false
         - name: "platform"
-          mandatory: true
           description: 'Platform'
-          url_suffix: false
         - name: "vendor"
-          mandatory: false
           description: 'Vendor'
-          url_suffix: false
         - name: "model"
-          mandatory: false
           description: 'Model'
-          url_suffix: false
         - name: "os_version"
-          mandatory: false
           description: 'Version'
-          url_suffix: false
         - name: "synchronized"
-          mandatory: false
           description: 'Synchronized'
-          url_suffix: false
         - name: "state"
-          mandatory: false
           description: 'Device state'
-          url_suffix: false
         - name: "device_type"
-          mandatory: true
           description: 'Type'
-          url_suffix: false
         - name: "confhash"
-          mandatory: false
           description: 'Config hash'
-          url_suffix: false
         - name: "last_seen"
-          mandatory: false
           description: 'Seen'
-          url_suffix: false
         - name: "port"
-          mandatory: false
           description: 'Port'
-          url_suffix: false
 
   - command:
       name: 'sync'
       description: 'Sync to'
       url: '/device_syncto'
+      no_show: true
       attributes:
         - name: 'hostname'
-          mandatory: false
           description: 'device name'
         - name: 'device_type'
-          mandatory: false
           description: 'device type'
         - name: 'group'
-          mandatory: false
           description: 'group name'
         - name: 'all'
-          mandatory: false
           description: 'sync all devices'
         - name: 'dry_run'
-          mandatory: false
           default: true
           description: 'dry run'
         - name: 'force'
-          mandatory: false
           default: false
           description: 'force run'
         - name: "resync"
           description: "Sync already synced devices"
-          mandatory: false
-          url_suffix: false
 
   - command:
       name: 'jobs'
       description: 'Show jobs'
       url: '/jobs?sort=-id&per_page=100'
-      attributes:
+      show_only: true
 
   - command:
       name: 'job'
       description: 'Show job'
       url: '/job'
+      show_only: true
       attributes:
         - name: 'id'
           mandatory: true
@@ -158,6 +116,7 @@ cli:
       name: 'linknets'
       description: 'Linknets'
       url: '/linknets'
+      update: true
       attributes:
         - name: 'id'
           mandatory: true
@@ -172,7 +131,6 @@ cli:
           mandatory: true
           description: 'Device A IP'
         - name: "device_a_port"
-          mandatory: false
           description: 'Device A port'
         - name: "device_b_id"
           mandatory: true
@@ -181,19 +139,17 @@ cli:
           mandatory: true
           description: 'Device B IP'
         - name: "device_b_port"
-          mandatory: false
           description: 'Device B port'
         - name: "site_id"
-          mandatory: false
           description: 'Site ID'
         - name: "description"
-          mandatory: false
           description: 'Description'
 
   - command:
       name: 'mgmtdomains'
       description: 'Management domains'
       url: '/mgmtdomains'
+      update: true
       attributes:
         - name: 'id'
           mandatory: true
@@ -213,22 +169,17 @@ cli:
           mandatory: true
           description: 'Device B IP'
         - name: "site_id"
-          mandatory: false
           description: 'Site ID'
         - name: "description"
-          mandatory: false
           description: 'Description'
         - name: "vlan"
           mandatory: true
           description: 'VLAN'
         - name: "esi_mac"
-          mandatory: false
           description: 'ESI MAC'
         - name: "device_a"
-          mandatory: false
           description: 'Device A hostname'
         - name: "device_b"
-          mandatory: false
           description: 'Device B hostname'
 
   - command:
@@ -255,24 +206,25 @@ cli:
       name: 'plugins'
       description: 'Show plugins'
       url: '/plugins'
-      attributes:
+      show_only: true
 
   - command:
       name: 'groups'
       description: 'Show groups'
       url: '/groups'
-      attributes:
+      show_only: true
 
   - command:
       name: 'version'
       description: 'Show version'
       url: '/system/version'
-      attributes:
+      show_only: true
 
   - command:
       name: 'interfaces'
       description: 'Interface'
       url: '/device/<hostname>/interfaces'
+      show_only: true
       attributes:
         - name: 'hostname'
           mandatory: true
@@ -297,6 +249,7 @@ cli:
       name: 'firmware_upgrade'
       description: 'Upgrade firmware on switch'
       url: '/firmware/upgrade'
+      no_show: true
       attributes:
         - name: 'url'
           mandatory: true
@@ -305,23 +258,16 @@ cli:
           mandatory: true
           description: 'Firmware filename'
         - name: 'hostname'
-          mandatory: false
           description: 'Hostname of the switch to use'
         - name: 'group'
-          mandatory: false
           description: 'Group name'
         - name: 'pre_flight'
-          mandatory: false
           description: 'Do a pre-flight check'
         - name: 'download'
-          mandatory: false
           description: 'Download the firmware to the switch'
         - name: 'activate'
-          mandatory: false
           description: 'Activate the firmware'
         - name: 'reboot'
-          mandatory: false
           description: 'Reboot the swtich when done'
         - name: 'start_at'
-          mandatory: false
           description: 'Schedule the firmware upgrade'

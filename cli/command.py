@@ -62,7 +62,7 @@ class CliHandler():
         if line.startswith('no') or line.startswith('show') or line.startswith('update'):
             line = ' '.join(line.split(' ')[1:])
 
-        return line, line.split(' ')[-1]
+        return line
 
     def complete(self, text: str, state: str) -> list:
         """
@@ -71,13 +71,22 @@ class CliHandler():
         Returns a possible completion.
 
         """
-        line, last = self.read_line()
+        line = self.read_line()
         commandlen = len(line.split(' '))
 
         if re.match(r'.+\|.*', line):
             commands = self.modifiers_commands
         elif commandlen < 2 and not line.endswith(' '):
-            commands = self.commands + self.builtin
+            if re.findall(r'\s*no.*', readline.get_line_buffer()):
+                commands = self.cli.get_not_show_only() + self.modifiers
+            elif re.match(r'\s*update.*', readline.get_line_buffer()):
+                commands = self.cli.get_update() + self.modifiers
+            elif not re.match(r'\s*show.*', readline.get_line_buffer()):
+                commands = self.cli.get_not_show_only() + self.builtin + self.modifiers
+            elif re.match(r'\s*show.*', readline.get_line_buffer()):
+                commands = self.cli.get_show() + self.modifiers
+            else:
+                commands = self.commands + self.modifiers
         else:
             commands = self.cli.get_attributes(self.node_name)
             commands += self.modifiers
@@ -203,15 +212,21 @@ class CliHandler():
         res = True
         line = line.rstrip()
 
-        if self.is_help(line) or self.is_show(line):
+        if self.is_help(line):
+            return True
+
+        if self.is_show(line):
             return True
 
         if len(line.split(' ')) == 1:
             attributes = None
             command = line
         else:
-            if line.split(' ')[0] in self.builtin:
-                return True
+            command = line.split(' ')[0]
+
+            if command == 'show' or command == 'update' or command == 'no':
+                attributes = line.rstrip().split(' ')[2:]
+                command = line.split(' ')[1]
             else:
                 attributes = line.rstrip().split(' ')[1:]
                 command = line.split(' ')[0]

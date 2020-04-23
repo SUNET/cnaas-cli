@@ -22,7 +22,9 @@ class f_cli_command_attributes(BaseModel):
     url: str = ''
     attributes: Optional[List[f_cli_attribute_name]]
     use_put: bool = False
-
+    show_only: bool = False
+    no_show: bool = False
+    update: bool = False
 
 class f_cli_command(BaseModel):
     command: f_cli_command_attributes
