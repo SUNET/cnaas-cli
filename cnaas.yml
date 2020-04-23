@@ -138,6 +138,10 @@ cli:
         - name: 'force'
           mandatory: true
           description: 'force run'
+        - name: "resync"
+          description: "Sync already synced devices"
+          mandatory: false
+          url_suffix: false
       methods:
         - name: "post"
 
