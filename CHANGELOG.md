@@ -19,3 +19,5 @@
 - A new command, 'update', is introduced. This can be used to update values of already existing devices. For example, to change state of a device, 'update device id 123 state MANAGED' can be used.
 
 - Handle the rare case where a command should send a PUT towards the API instead of a POST.
+
+- For the contexts no, show and update only display the commands available for each context when using tab-complete. For example, we can't update a group so don't display it when doing update.
