@@ -342,7 +342,7 @@ cli:
         - name: 'group'
           mandatory: false
           description: 'Group name'
-        - name: 'pre-flight'
+        - name: 'pre_flight'
           mandatory: false
           description: 'Do a pre-flight check'
         - name: 'download'
