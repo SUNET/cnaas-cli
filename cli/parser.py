@@ -131,20 +131,18 @@ class CliParser():
 
         return url
 
-    def get_methods(self, command: str) -> list:
+    def get_use_put(self, command: str) -> list:
         """
-        Return attribute names for a command
+        Return true if we should use PUT instead of POST
 
         """
 
-        cmd_methods = []
         for cmd in self.cli.cli:
             if cmd.command.name != command:
                 continue
-            for method in cmd.command.methods:
-                cmd_methods.append(method.name)
+            return cmd.command.use_put
 
-        return cmd_methods
+        return False
 
     def get_url_suffix(self, command: str, attribute: str) -> bool:
         """

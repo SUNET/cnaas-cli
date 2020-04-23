@@ -91,7 +91,7 @@ class CliHandler():
         except IndexError:
             return None
 
-    def __helptext_all_commands(self):
+    def helptext_all_commands(self):
         """
         Print helptexts for all commands
 
@@ -113,7 +113,7 @@ class CliHandler():
 
         return '\n'
 
-    def __helptext_command(self, line):
+    def helptext_command(self, line):
         """
         Print helptext for a single command
         """
@@ -134,9 +134,9 @@ class CliHandler():
         """
 
         if line.rstrip() == 'help':
-            return self.__helptext_all_commands()
+            return self.helptext_all_commands()
 
-        return self.__helptext_command(line)
+        return self.helptext_command(line)
 
     def builtin_cmd(self, command: str) -> str:
         """
@@ -293,15 +293,14 @@ class CliHandler():
         elif self.is_help(line):
             return self.helptext(line)
         else:
-            if self.cli.get_methods(command) == ['get']:
-                return Rest.get(line, self.token, self.url,
-                                modifier=modifier)
-            elif self.cli.get_methods(command) == ['get', 'put']:
+            if self.cli.get_use_put(command):
                 return Rest.put(line, self.token, self.url,
                                 modifier=modifier)
+            else:
+                return Rest.post(line, self.token, url=self.url,
+                                 modifier=modifier)
 
-            return Rest.post(line, self.token, url=self.url, modifier=modifier)
-        return 'I have no idea what to do with this command'
+        return 'I have no idea what to do with this command.\n'
 
     def print_suggestions(self, substitution: str, matches: list,
                           longest_match_length: int) -> None:

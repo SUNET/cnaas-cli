@@ -21,7 +21,7 @@ class f_cli_command_attributes(BaseModel):
     description: str = ''
     url: str = ''
     attributes: Optional[List[f_cli_attribute_name]]
-    methods: List[f_cli_methods]
+    use_put: bool = False
 
 
 class f_cli_command(BaseModel):

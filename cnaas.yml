@@ -15,16 +15,12 @@ cli:
         - name: 'device_type'
           mandatory: true
           description: 'Type of device (ACCESS, DIST, ...)'
-      methods:
-        - name: 'post'
 
   - command:
       name: 'devices'
       description: 'Handles devices'
       url: '/devices'
       attributes:
-      methods:
-        - name: "get"
 
   - command:
       name: 'device'
@@ -111,9 +107,6 @@ cli:
           mandatory: false
           description: 'Port'
           url_suffix: false
-      methods:
-        - name: "get"
-        - name: "post"
 
   - command:
       name: 'sync'
@@ -144,16 +137,12 @@ cli:
           description: "Sync already synced devices"
           mandatory: false
           url_suffix: false
-      methods:
-        - name: "post"
 
   - command:
       name: 'jobs'
       description: 'Show jobs'
       url: '/jobs?sort=-id&per_page=100'
       attributes:
-      methods:
-        - name: 'get'
 
   - command:
       name: 'job'
@@ -164,8 +153,6 @@ cli:
           mandatory: true
           description: 'Job ID'
           url_suffix: true
-      methods:
-        - name: 'get'
 
   - command:
       name: 'linknets'
@@ -202,9 +189,6 @@ cli:
         - name: "description"
           mandatory: false
           description: 'Description'
-      methods:
-        - name: 'get'
-        - name: 'post'
 
   - command:
       name: 'mgmtdomains'
@@ -246,57 +230,44 @@ cli:
         - name: "device_b"
           mandatory: false
           description: 'Device B hostname'
-      methods:
-        - name: 'get'
-        - name: 'post'
 
   - command:
       name: 'settings'
       description: 'Refresh settings'
       url: '/repository/settings'
+      use_put: true
       attributes:
         - name: 'action'
           mandatory: true
           description: 'Settings action'
-      methods:
-        - name: 'get'
-        - name: 'put'
 
   - command:
       name: 'templates'
       description: 'Refresh templates'
       url: '/repository/templates'
+      use_put: true
       attributes:
         - name: 'action'
           mandatory: true
           description: 'Settings action'
-      methods:
-        - name: 'get'
-        - name: 'put'
 
   - command:
       name: 'plugins'
       description: 'Show plugins'
       url: '/plugins'
       attributes:
-      methods:
-        - name: 'get'
 
   - command:
       name: 'groups'
       description: 'Show groups'
       url: '/groups'
       attributes:
-      methods:
-        - name: 'get'
 
   - command:
       name: 'version'
       description: 'Show version'
       url: '/system/version'
       attributes:
-      methods:
-        - name: 'get'
 
   - command:
       name: 'interfaces'
@@ -306,8 +277,6 @@ cli:
         - name: 'hostname'
           mandatory: true
           description: 'Configure interfaces'
-      methods:
-        - name: 'get'
 
   - command:
       name: 'download'
@@ -323,9 +292,6 @@ cli:
         - name: 'verify_tls'
           mandatory: true
           description: 'Ignore SSL certificate'
-      methods:
-        - name: 'get'
-        - name: 'post'
 
   - command:
       name: 'firmware_upgrade'
@@ -359,5 +325,3 @@ cli:
         - name: 'start_at'
           mandatory: false
           description: 'Schedule the firmware upgrade'
-      methods:
-        - name: 'post'
