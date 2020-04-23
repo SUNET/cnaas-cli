@@ -182,6 +182,7 @@ def prettyprint_jobs_single(data: dict) -> str:
             result = job_data['result']['message']
 
     output += '  %-30s %-50d\n' % ('ID:', job_data['id'])
+    output += '  %-30s %-50s\n' % ('Status:', job_data['status'])
     output += '  %-30s %-50s\n' % ('Scheduled time:', job_data['scheduled_time'])
     output += '  %-30s %-50s\n' % ('Start time:', job_data['start_time'])
     output += '  %-30s %-30s\n' % ('Finish time: ', job_data['finish_time'])
