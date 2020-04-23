@@ -12,6 +12,7 @@ class f_cli_attribute_name(BaseModel):
     name: str = ''
     mandatory: bool = False
     description: str = ''
+    default: bool = None
     url_suffix: bool = False
 
 
