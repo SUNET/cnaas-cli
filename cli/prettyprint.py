@@ -16,7 +16,10 @@ def prettyprint_error(data: dict) -> str:
     error = 'Could not execute command\n'
 
     if 'message' in data:
-        error += data['message']
+        if type(data['message']) == list:
+            error += ', '.join(data['message'])
+        elif type(data['message']) == str:
+            error += data['message']
     else:
         error += 'Unknown error'
 
@@ -29,7 +32,13 @@ def prettyprint_device(data: dict) -> str:
     """
 
     output = ''
-    device_data = data['data']['devices'][0]
+
+    if 'devices' in data['data']:
+        device_data = data['data']['devices'][0]
+    elif 'updated_device' in data['data']:
+        device_data = data['data']['updated_device']
+    else:
+        'Could not parse response from API.'
 
     output += '  %-30s %-30d\n' % ('ID:', device_data['id'])
     output += '  %-30s %-30s\n' % ('Hostname:', device_data['hostname'])
