@@ -80,6 +80,24 @@ class CliParser():
                     return False
         return None
 
+    def get_attributes_default(self, command: str) -> list:
+        """
+        Return whether an attribute have an default value or not
+
+        """
+        attributes = dict()
+
+        for cmd in self.cli.cli:
+            if cmd.command.name != command:
+                continue
+            if cmd.command.attributes is None:
+                return attributes
+            for attr in cmd.command.attributes:
+                if attr.default is not None:
+                    attributes[attr.name] = attr.default
+
+        return attributes
+
     def get_attribute_description(self, command: str, attribute: str) -> str:
         """
         Return descirption for an attribute

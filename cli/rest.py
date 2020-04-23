@@ -29,6 +29,7 @@ class Rest():
 
         # Make a dict of arguments and values
         args = dict(zip(args[::2], args[1::2]))
+        default_args = cls.cli.get_attributes_default(command)
 
         # Make sure we use bool and not str
         for key in args:
@@ -48,6 +49,10 @@ class Rest():
                 url = pattern.sub(str(args[key]), url)
             else:
                 new_args[key] = args[key]
+
+        for key in default_args:
+            if key not in new_args:
+                new_args[key] = default_args[key]
 
         return (url, new_args)
 

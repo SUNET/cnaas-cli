@@ -133,10 +133,12 @@ cli:
           mandatory: false
           description: 'sync all devices'
         - name: 'dry_run'
-          mandatory: true
+          mandatory: false
+          default: true
           description: 'dry run'
         - name: 'force'
-          mandatory: true
+          mandatory: false
+          default: false
           description: 'force run'
         - name: "resync"
           description: "Sync already synced devices"
