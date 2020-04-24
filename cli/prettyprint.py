@@ -300,26 +300,30 @@ def prettyprint_command(data: dict, command: str) -> str:
                     headers.append(key)
                 if key == 'id':
                     values += ' %-5s |' % str(row[key])
-                elif key == 'device_type':
-                    values += ' %-12s |' % str(row[key])
-                elif key == 'vendor':
-                    values += ' %-10s |' % str(row[key])
+                elif key == 'management_ip':
+                    values += ' %-16s |' % str(row[key])
+                elif key == 'model':
+                    values += ' %-20s |' % str(row[key])
+                elif key == 'hostname':
+                    values += ' %-20s |' % str(row[key])
                 elif key == 'last_seen':
                     values += ' %-30s |' % str(row[key])
                 else:
-                    values += ' %-10s |' % str(row[key])
+                    values += ' %-15s |' % str(row[key])
             values += '\n'
         for header in headers:
             if header == 'id':
                 header_formatted += ' %-5s |' % str(header)
-            elif header == 'device_type':
-                header_formatted += ' %-12s |' % str(header)
-            elif header == 'vendor':
-                header_formatted += ' %-10s |' % str(header)
+            elif header == 'management_ip':
+                header_formatted += ' %-16s |' % str(header)
+            elif header == 'model':
+                header_formatted += ' %-20s |' % str(header)
+            elif header == 'hostname':
+                header_formatted += ' %-20s |' % str(header)
             elif header == 'last_seen':
                 header_formatted += ' %-30s |' % str(header)
             else:
-                header_formatted += ' %-10s |' % str(header)
+                header_formatted += ' %-15s |' % str(header)
 
         values = values.replace('\\n', '\n')
         width, height = terminal_size()
