@@ -37,6 +37,10 @@ def prettyprint_device(data: dict) -> str:
         device_data = data['data']['devices'][0]
     elif 'updated_device' in data['data']:
         device_data = data['data']['updated_device']
+    elif 'deleted_device' in data['data']:
+        device_data = data['data']['deleted_device']
+    elif 'added_device' in data['data']:
+        device_data = data['data']['added_device']
     else:
         'Could not parse response from API.'
 

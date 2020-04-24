@@ -30,7 +30,6 @@ cli:
       update: true
       attributes:
         - name: 'id'
-          mandatory: true
           description: 'Device ID'
           url_suffix: true
         - name: "hostname"
