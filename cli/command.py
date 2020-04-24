@@ -343,6 +343,8 @@ class CliHandler():
                     description = 'Update the command that follows'
                 elif match == 'exit' or match == 'quit':
                     description = 'Exit the CLI'
+                elif match == '|':
+                    description = 'Modify the output'
                 else:
                     description = self.cli.get_command_description(match)
                 print('  %-20s %s' % (match, description))
@@ -361,7 +363,7 @@ class CliHandler():
                         print('  %-20s %s (MANDATORY)' % (match, description))
                     else:
                         print('  %-20s %s' % (match, description))
-
+        print('')
         print(self.prompt, line, sep='', end='', flush=True)
 
     def loop(self) -> None:
