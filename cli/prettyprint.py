@@ -184,7 +184,7 @@ def prettyprint_jobs_single(data: dict) -> str:
 
     if job_data['exception'] is not None and 'message' in job_data['exception']:
         exception = job_data['exception']['message']
-    if job_data['status'] == 'EXCEPTION' and 'error' in job_data['result']:
+    if job_data['status'] == 'EXCEPTION' and job_data['result'] is not None and 'error' in job_data['result']:
         exception = '\033[91m%s\033[0m' % job_data['result']['error']
     if job_data['exception'] is None and job_data['result'] is not None:
         if 'message' in job_data['result']:
