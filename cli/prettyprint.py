@@ -3,7 +3,7 @@ from cli.terminal import get_hline, terminal_size, print_hline, lrstrip
 
 
 forbidden = ['confhash', 'oob_ip', 'infra_ip', 'site_id', 'port', 'dhcp_ip',
-             'ztp_mac', 'platform']
+             'ztp_mac', 'platform', 'serial', 'os_version']
 job_fields = ['id', 'status', 'start_time', 'finish_time', 'function_name',
               'scheduled_by', 'exception']
 
@@ -298,10 +298,28 @@ def prettyprint_command(data: dict, command: str) -> str:
                     continue
                 if key not in headers:
                     headers.append(key)
-                values += ' %8s\t|' % str(row[key])
+                if key == 'id':
+                    values += ' %-5s |' % str(row[key])
+                elif key == 'device_type':
+                    values += ' %-12s |' % str(row[key])
+                elif key == 'vendor':
+                    values += ' %-10s |' % str(row[key])
+                elif key == 'last_seen':
+                    values += ' %-30s |' % str(row[key])
+                else:
+                    values += ' %-10s |' % str(row[key])
             values += '\n'
         for header in headers:
-            header_formatted += ' %8s\t|' % str(header)
+            if header == 'id':
+                header_formatted += ' %-5s |' % str(header)
+            elif header == 'device_type':
+                header_formatted += ' %-12s |' % str(header)
+            elif header == 'vendor':
+                header_formatted += ' %-10s |' % str(header)
+            elif header == 'last_seen':
+                header_formatted += ' %-30s |' % str(header)
+            else:
+                header_formatted += ' %-10s |' % str(header)
 
         values = values.replace('\\n', '\n')
         width, height = terminal_size()
