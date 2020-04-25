@@ -58,7 +58,7 @@ class CliHandler():
         full_line = readline.get_line_buffer().lstrip()
         line = full_line
 
-        if line.startswith('no') or line.startswith('show') or line.startswith('update'):
+        if any(line.startswith(x) for x in ['no', 'show', 'update']):
             command = line.split(' ')[1]
             line = ' '.join(line.split(' ')[1:])
         else:
@@ -90,14 +90,16 @@ class CliHandler():
                 commands += self.modifiers + self.builtin
         else:
             if re.findall(r'\s*show.*', full_line):
-                commands = self.cli.get_attributes_show(command) + self.modifiers
+                commands = self.cli.get_attributes_show(command)
+                commands += self.modifiers
             elif re.findall(r'\s*no.*', full_line):
                 commands = self.cli.get_attributes_no(command) + self.modifiers
             else:
                 commands = self.cli.get_attributes(command)
                 commands += self.modifiers
 
-        completions = [x for x in commands if x.startswith(line.split(' ')[-1])]
+        split_line = line.split(' ')[-1]
+        completions = [x for x in commands if x.startswith(split_line)]
 
         try:
             return completions[state]
@@ -229,7 +231,7 @@ class CliHandler():
         else:
             command = line.split(' ')[0]
 
-            if command == 'show' or command == 'update' or command == 'no':
+            if any(line.startswith(x) for x in ['no', 'show', 'update']):
                 attributes = line.rstrip().split(' ')[2:]
                 command = line.split(' ')[1]
             else:
@@ -379,6 +381,7 @@ class CliHandler():
         self.old_completer = readline.get_completer()
 
         line = input(self.prompt)
+        job_status = r'.*Status:.*(FINISHED|ABORTED|EXCEPTION)'
 
         if re.match(r'.*\|*monitor', line):
             if not line.startswith('show '):
@@ -393,7 +396,7 @@ class CliHandler():
                         print(output)
 
                         if re.match(r'.*job.*id.*', line):
-                            if re.findall(r'.*Status:.*(FINISHED|ABORTED|EXCEPTION)', output):
+                            if re.findall(job_status, output):
                                 print('Job is not running, stopping monitor.')
                                 break
 
