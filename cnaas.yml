@@ -28,10 +28,14 @@ cli:
       description: 'Handles a single device'
       url: '/device'
       update: true
+      delete: true
       attributes:
         - name: 'id'
           description: 'Device ID'
           url_suffix: true
+          show: true
+          delete: true
+          mandatory: true
         - name: "hostname"
           description: 'Hostname'
         - name: "site_id"
@@ -110,16 +114,20 @@ cli:
           mandatory: true
           description: 'Job ID'
           url_suffix: true
+          show: true
+          mandatory: true
 
   - command:
       name: 'linknets'
       description: 'Linknets'
       url: '/linknets'
       update: true
+      delete: true
       attributes:
         - name: 'id'
           mandatory: true
           description: 'Job ID'
+          delete: true
         - name: "ipv4_network"
           mandatory: true
           description: 'IPv4 Network'
@@ -149,10 +157,12 @@ cli:
       description: 'Management domains'
       url: '/mgmtdomains'
       update: true
+      delete: true
       attributes:
         - name: 'id'
           mandatory: true
           description: 'Job ID'
+          delete: true
         - name: "ipv4_gw"
           mandatory: true
           description: 'IPv4 gateway'
@@ -228,6 +238,7 @@ cli:
         - name: 'hostname'
           mandatory: true
           description: 'Configure interfaces'
+          show: true
 
   - command:
       name: 'download'
