@@ -1,5 +1,11 @@
 # Changelog
 
+## 2020-04-24
+
+- If 'show job', 'show job id 0', 'show job id -1' or 'show job id last' is executed we will get the last job and show the result of it.
+
+- Only show the command arguments that are valid for each operation. For example: If we do 'show device <tab><tab>' the tab-completion will only display the argument 'id' since that one is the only one needed when showing a single device.
+
 ## 2020-04-23
 
 ### Added
