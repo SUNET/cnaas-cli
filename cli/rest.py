@@ -76,7 +76,7 @@ class Rest():
                 return prettyprint(res.json(), command)
 
         except Exception as e:
-            return 'Could not reach CNaaS NMS, wrong URL?\n\n'
+            return 'Could not execute command\n\n'
 
         return prettyprint(res.json(), command, modifier=modifier)
 
@@ -100,7 +100,7 @@ class Rest():
                 return prettyprint(res.json(), command)
 
         except Exception as e:
-            return 'Could not reach CNaaS NMS, wrong URL?\n\n'
+            return 'Could not execute command\n\n'
 
         return prettyprint(res.json(), command, modifier=modifier)
 
@@ -124,7 +124,7 @@ class Rest():
                 return prettyprint(res.json(), command)
 
         except Exception as e:
-            return 'Could not reach CNaaS NMS, wrong URL?\n\n'
+            return 'Could not execute command\n\n'
 
         return prettyprint(res.json(), command, modifier=modifier)
 
@@ -149,6 +149,6 @@ class Rest():
                 return prettyprint(res.json(), command)
 
         except Exception as e:
-            return 'Could not reach CNaaS NMS, wrong URL?\n\n'
+            return 'Could not execute command\n\n'
 
         return prettyprint(res.json(), command, modifier=modifier)
