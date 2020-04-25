@@ -24,8 +24,10 @@ class Rest():
 
         args = line.rstrip().split(' ')[1:]
         command = line.split(' ')[0]
-
         url = url + cls.cli.get_url(command)
+
+        if command == 'job' and args == []:
+            args = ['id', 'last']
 
         # Make a dict of arguments and values
         args = dict(zip(args[::2], args[1::2]))
@@ -44,7 +46,13 @@ class Rest():
             pattern = re.compile(r'<%s?>' % key)
 
             if cls.cli.get_url_suffix(command, key):
-                url += '/' + str(args[key])
+                if any(args[key] == x for x in ['last', '-1', '0']):
+                    args[key] = 's?sort=-id&per_page=1&page=1'
+                    url += str(args[key])
+
+                    print('Showing the last job...\n')
+                else:
+                    url += '/' + str(args[key])
             elif pattern.search(url):
                 url = pattern.sub(str(args[key]), url)
             else:
