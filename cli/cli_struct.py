@@ -14,6 +14,8 @@ class f_cli_attribute_name(BaseModel):
     description: str = ''
     default: bool = None
     url_suffix: bool = False
+    show: bool = False
+    delete: bool = False
 
 
 class f_cli_command_attributes(BaseModel):
@@ -25,6 +27,8 @@ class f_cli_command_attributes(BaseModel):
     show_only: bool = False
     no_show: bool = False
     update: bool = False
+    delete: bool = False
+
 
 class f_cli_command(BaseModel):
     command: f_cli_command_attributes

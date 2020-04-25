@@ -38,7 +38,6 @@ class CliHandler():
         self.modifiers = ['|']
         self.modifiers_commands = ['grep', 'monitor']
         self.node_name = ''
-        self.commands = self.cli.get_commands()
 
         readline.set_completer(self.complete)
         readline.parse_and_bind('tab: complete')
@@ -57,12 +56,16 @@ class CliHandler():
 
         """
 
-        line = readline.get_line_buffer().lstrip()
+        full_line = readline.get_line_buffer().lstrip()
+        line = full_line
 
         if line.startswith('no') or line.startswith('show') or line.startswith('update'):
+            command = line.split(' ')[1]
             line = ' '.join(line.split(' ')[1:])
+        else:
+            command = line.split(' ')[0]
 
-        return line
+        return line, full_line, command
 
     def complete(self, text: str, state: str) -> list:
         """
@@ -71,31 +74,33 @@ class CliHandler():
         Returns a possible completion.
 
         """
-        line = self.read_line()
+        line, full_line, command = self.read_line()
         commandlen = len(line.split(' '))
 
         if re.match(r'.+\|.*', line):
             commands = self.modifiers_commands
         elif commandlen < 2 and not line.endswith(' '):
-            if re.findall(r'\s*no.*', readline.get_line_buffer()):
-                commands = self.cli.get_not_show_only() + self.modifiers
-            elif re.match(r'\s*update.*', readline.get_line_buffer()):
+            if re.findall(r'\s*no.*', full_line):
+                commands = self.cli.get_delete() + self.modifiers
+            elif re.match(r'\s*update.*', full_line):
                 commands = self.cli.get_update() + self.modifiers
-            elif not re.match(r'\s*show.*', readline.get_line_buffer()):
-                commands = self.cli.get_not_show_only() + self.builtin + self.modifiers
-            elif re.match(r'\s*show.*', readline.get_line_buffer()):
+            elif re.match(r'\s*show.*', full_line):
                 commands = self.cli.get_show() + self.modifiers
             else:
-                commands = self.commands + self.modifiers
+                commands = self.cli.get_not_show()
+                commands += self.modifiers + self.builtin
         else:
-            commands = self.cli.get_attributes(self.node_name)
-            commands += self.modifiers
+            if re.findall(r'\s*show.*', full_line):
+                commands = self.cli.get_attributes_show(command) + self.modifiers
+            elif re.findall(r'\s*no.*', full_line):
+                commands = self.cli.get_attributes_no(command) + self.modifiers
+            else:
+                commands = self.cli.get_attributes(command)
+                commands += self.modifiers
 
         completions = [x for x in commands if x.startswith(line.split(' ')[-1])]
 
         try:
-            if completions[state] in self.commands:
-                self.node_name = completions[state]
             return completions[state]
         except IndexError:
             return None
@@ -236,7 +241,7 @@ class CliHandler():
             print('Missing attribute values')
             return False
 
-        if command not in self.commands:
+        if command not in self.cli.get_commands():
             print('Command does not exist')
             return False
 

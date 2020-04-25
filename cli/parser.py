@@ -116,6 +116,30 @@ class CliParser():
 
         return description
 
+    def get_attributes_show(self, command: str) -> str:
+        attributes = []
+
+        for cmd in self.cli.cli:
+            if cmd.command.name != command:
+                continue
+            for attr in cmd.command.attributes:
+                if attr.show:
+                    attributes.append(attr.name)
+
+        return attributes
+
+    def get_attributes_no(self, command: str) -> str:
+        attributes = []
+
+        for cmd in self.cli.cli:
+            if cmd.command.name != command:
+                continue
+            for attr in cmd.command.attributes:
+                if attr.delete:
+                    attributes.append(attr.name)
+
+        return attributes
+
     def get_url(self, command: str) -> str:
         """
         Return URL
@@ -144,7 +168,7 @@ class CliParser():
 
         return False
 
-    def get_not_show_only(self) -> list:
+    def get_not_show(self) -> list:
         """
         Return true if this command is a show command only
 
@@ -153,6 +177,15 @@ class CliParser():
 
         for cmd in self.cli.cli:
             if not cmd.command.show_only:
+                commands.append(cmd.command.name)
+
+        return commands
+
+    def get_delete(self) -> list:
+        commands = []
+
+        for cmd in self.cli.cli:
+            if cmd.command.delete:
                 commands.append(cmd.command.name)
 
         return commands
