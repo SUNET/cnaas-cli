@@ -37,7 +37,6 @@ class CliHandler():
         self.builtin = ['no', 'show', 'help', 'history', 'quit', 'update']
         self.modifiers = ['|']
         self.modifiers_commands = ['grep', 'monitor']
-        self.node_name = ''
 
         readline.set_completer(self.complete)
         readline.parse_and_bind('tab: complete')
