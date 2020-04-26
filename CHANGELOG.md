@@ -1,5 +1,9 @@
 # Changelog
 
+## 2020-04-25
+
+- Now possible to execute 'show' and 'no' command with out the id attribute. For example, instead of doing 'show device id 123' one can now do 'show device 123' and 'no device id 123' can be replaced with 'no device 123'.
+
 ## 2020-04-24
 
 - If 'show job', 'show job id 0', 'show job id -1' or 'show job id last' is executed we will get the last job and show the result of it.
