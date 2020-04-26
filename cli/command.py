@@ -238,10 +238,6 @@ class CliHandler():
                 attributes = line.rstrip().split(' ')[1:]
                 command = line.split(' ')[0]
 
-        if attributes is not None and len(attributes) % 2 != 0:
-            print('Missing attribute values')
-            return False
-
         if command not in self.cli.get_commands():
             print('Command does not exist')
             return False
