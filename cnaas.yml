@@ -20,7 +20,7 @@ cli:
   - command:
       name: 'devices'
       description: 'Handles devices'
-      url: '/devices'
+      url: '/devices?per_page=100'
       show_only: true
 
   - command:
