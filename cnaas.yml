@@ -35,7 +35,6 @@ cli:
           url_suffix: true
           show: true
           delete: true
-          mandatory: true
         - name: "hostname"
           description: 'Hostname'
         - name: "site_id"

@@ -28,6 +28,10 @@ class Rest():
 
         if command == 'job' and args == []:
             args = ['id', 'last']
+        elif re.findall(r'(job|device)', command):
+            if len(args) == 1 and re.match(r'[0-9]+', args[0]):
+                num_arg = args[0]
+                args = ['id', num_arg]
 
         # Make a dict of arguments and values
         args = dict(zip(args[::2], args[1::2]))

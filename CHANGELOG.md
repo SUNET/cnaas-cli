@@ -1,5 +1,9 @@
 # Changelog
 
+## 2020-04-25
+
+- Now possible to execute 'show' and 'no' command without the id attribute. For example, instead of doing 'show device id 123' one can now do 'show device 123' and 'no device id 123' can be replaced with 'no device 123'.
+
 ## 2020-04-24
 
 - If 'show job', 'show job id 0', 'show job id -1' or 'show job id last' is executed we will get the last job and show the result of it.
@@ -7,8 +11,6 @@
 - Only show the command arguments that are valid for each operation. For example: If we do 'show device <tab><tab>' the tab-completion will only display the argument 'id' since that one is the only one needed when showing a single device.
 
 ## 2020-04-23
-
-### Added
 
 - Monitor mode. When displaying a job with 'show job id 123' one can now add '| monitor' to refresh the job status until the job finishes or Ctrl+C is invoked.
 
