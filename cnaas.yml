@@ -96,6 +96,10 @@ cli:
           description: 'force run'
         - name: "resync"
           description: "Sync already synced devices"
+        - name: "comment"
+          description: "Add a comment"
+        - name: "ticket_ref"
+          description: "Add a ticket reference"
 
   - command:
       name: 'jobs'
