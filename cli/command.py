@@ -391,10 +391,9 @@ class CliHandler():
                         output += '\n\nHit Ctrl+C to abort'
                         print(output)
 
-                        if re.match(r'.*job.*id.*', line):
-                            if re.findall(job_status, output):
-                                print('Job is not running, stopping monitor.')
-                                break
+                        if re.findall(job_status, output):
+                            print('Job is not running, stopping monitor.')
+                            break
 
                         time.sleep(2)
                     except KeyboardInterrupt:
