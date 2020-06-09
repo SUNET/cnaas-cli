@@ -69,12 +69,8 @@ class Rest():
         return (url, new_args)
 
     @classmethod
-    def get(cls, command: str, token: str, url: str,
-            modifier: Optional[str] = '') -> str:
-        """
-        GET method, call NMS with the right URL and arguments
-
-        """
+    def rest_call(cls, method: str, command: str, token: str, url: str,
+                  modifier: Optional[str] = '') -> str:
 
         (url, args) = cls.parse_args(command, url)
 
@@ -82,7 +78,18 @@ class Rest():
         headers = {'Authorization': 'Bearer ' + token}
 
         try:
-            res = requests.get(url, headers=headers, json=args, verify=False)
+            if method == 'GET':
+                res = requests.get(url, headers=headers, json=args,
+                                   verify=False)
+            if method == 'POST':
+                res = requests.post(url, headers=headers, json=args,
+                                    verify=False)
+            elif method == 'PUT':
+                res = requests.put(url, headers=headers, json=args,
+                                   verify=False)
+            elif method == 'DELETE':
+                res = requests.put(url, headers=headers, json=args,
+                                   verify=False)
 
             if res.status_code != 200:
                 return prettyprint(res.json(), command)
@@ -91,6 +98,16 @@ class Rest():
             return 'Could not execute command\n\n'
 
         return prettyprint(res.json(), command, modifier=modifier)
+
+    @classmethod
+    def get(cls, command: str, token: str, url: str,
+            modifier: Optional[str] = '') -> str:
+        """
+        GET method, call NMS with the right URL and arguments
+
+        """
+
+        return cls.rest_call('GET', command, token, url, modifier)
 
     @classmethod
     def post(cls, command: str, token: str, url: str,
@@ -100,21 +117,7 @@ class Rest():
 
         """
 
-        (url, args) = cls.parse_args(command, url)
-
-        command = command.split(' ')[0]
-        headers = {'Authorization': 'Bearer ' + token}
-
-        try:
-            res = requests.post(url, headers=headers, json=args, verify=False)
-
-            if res.status_code != 200:
-                return prettyprint(res.json(), command)
-
-        except Exception as e:
-            return 'Could not execute command\n\n'
-
-        return prettyprint(res.json(), command, modifier=modifier)
+        return cls.rest_call('POST', command, token, url, modifier)
 
     @classmethod
     def put(cls, command: str, token: str, url: str,
@@ -124,21 +127,7 @@ class Rest():
 
         """
 
-        (url, args) = cls.parse_args(command, url)
-
-        command = command.split(' ')[0]
-        headers = {'Authorization': 'Bearer ' + token}
-
-        try:
-            res = requests.put(url, headers=headers, json=args, verify=False)
-
-            if res.status_code != 200:
-                return prettyprint(res.json(), command)
-
-        except Exception as e:
-            return 'Could not execute command\n\n'
-
-        return prettyprint(res.json(), command, modifier=modifier)
+        return cls.rest_call('PUT', command, token, url, modifier)
 
     @classmethod
     def delete(cls, command: str, token: str, url: str,
@@ -148,19 +137,4 @@ class Rest():
 
         """
 
-        (url, args) = cls.parse_args(command, url)
-
-        command = command.split(' ')[0]
-        headers = {'Authorization': 'Bearer ' + token}
-
-        try:
-            res = requests.delete(url, headers=headers, json=args,
-                                  verify=False)
-
-            if res.status_code != 200:
-                return prettyprint(res.json(), command)
-
-        except Exception as e:
-            return 'Could not execute command\n\n'
-
-        return prettyprint(res.json(), command, modifier=modifier)
+        return cls.rest_call('DELETE', command, token, url, modifier)
