@@ -26,11 +26,16 @@ class Rest():
         new_args = dict()
         args_dict = dict()
 
+        url = url + cls.cli.get_url(command)
         args = line.rstrip().split(' ')[1:]
         command = line.split(' ')[0]
-        url = url + cls.cli.get_url(command)
         default_args = cls.cli.get_attributes_default(command)
 
+        # If we have a job command and an empty list of arguments, set
+        # the job ID to last. By doing this we will get the last job.
+        #
+        # Also, if we only and an ID, insert the argument keyword 'id'
+        # before it to build a correct set of arguments.
         if command == 'job' and args == []:
             args = ['id', 'last']
         elif re.findall(r'(job|device)', command):
@@ -38,8 +43,12 @@ class Rest():
                 num_arg = args[0]
                 args = ['id', num_arg]
 
+        # We also have to figure out if we have arguments without
+        # values, then we should get the default value from the
+        # specification and use that.
         for idx in range(0, len(args)):
             arg = args[idx]
+
             try:
                 if arg in default_args:
                     if args[idx + 1] in default_args:
@@ -50,7 +59,9 @@ class Rest():
             except IndexError:
                 new_args[arg] = default_args[arg]
 
-        # Sometimes we want to add something to the end of an URL.
+        # Sometimes we want to add something to the end of an URL, for
+        # example if we have the argument 'last' for a job, we should
+        # append something to the URL.
         for key in args_dict:
             pattern = re.compile(r'<%s?>' % key)
 
@@ -71,8 +82,6 @@ class Rest():
                 url = pattern.sub(str(args_dict[key]), url)
             else:
                 new_args[key] = args_dict[key]
-
-        print(new_args)
 
         return (url, new_args)
 
