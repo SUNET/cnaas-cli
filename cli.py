@@ -3,7 +3,6 @@ import getopt
 
 from urllib.parse import urlparse
 from cli.command import CliHandler
-from signal import signal, SIGINT
 
 
 def usage():
