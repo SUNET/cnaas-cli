@@ -87,6 +87,7 @@ cli:
         - name: 'group'
           description: 'group name'
         - name: 'all'
+          default: false
           description: 'sync all devices'
         - name: 'dry_run'
           default: true
@@ -96,6 +97,7 @@ cli:
           description: 'force run'
         - name: "resync"
           description: "Sync already synced devices"
+          default: false
         - name: "comment"
           description: "Add a comment"
         - name: "ticket_ref"
