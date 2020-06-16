@@ -23,12 +23,11 @@ class Rest():
         """
 
         idx = 0
-        new_args = dict()
         args_dict = dict()
 
-        url = url + cls.cli.get_url(command)
         args = line.rstrip().split(' ')[1:]
         command = line.split(' ')[0]
+        url = url + cls.cli.get_url(command)
         default_args = cls.cli.get_attributes_default(command)
 
         # If we have a job command and an empty list of arguments, set
@@ -52,12 +51,12 @@ class Rest():
             try:
                 if arg in default_args:
                     if args[idx + 1] in default_args:
-                        new_args[arg] = default_args[arg]
+                        args_dict[arg] = default_args[arg]
                     else:
-                        new_args[arg] = args[idx + 1]
+                        args_dict[arg] = args[idx + 1]
                         idx = idx + 1
             except IndexError:
-                new_args[arg] = default_args[arg]
+                args_dict[arg] = default_args[arg]
 
         # Sometimes we want to add something to the end of an URL, for
         # example if we have the argument 'last' for a job, we should
@@ -81,9 +80,9 @@ class Rest():
             elif pattern.search(url):
                 url = pattern.sub(str(args_dict[key]), url)
             else:
-                new_args[key] = args_dict[key]
+                args_dict[key] = args_dict[key]
 
-        return (url, new_args)
+        return (url, args_dict)
 
     @classmethod
     def rest_call(cls, method: str, command: str, token: str, url: str,
