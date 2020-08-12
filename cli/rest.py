@@ -45,18 +45,32 @@ class Rest():
         # We also have to figure out if we have arguments without
         # values, then we should get the default value from the
         # specification and use that.
-        for idx in range(0, len(args)):
+
+        idx = 0
+
+        while idx < len(args):
             arg = args[idx]
 
             try:
                 if arg in default_args:
                     if args[idx + 1] in default_args:
                         args_dict[arg] = default_args[arg]
-                    else:
-                        args_dict[arg] = args[idx + 1]
                         idx = idx + 1
+                    else:
+                        next_arg = args[idx + 1].lower()
+                        if next_arg != 'true' and next_arg != 'false':
+                            args_dict[arg] = default_args[arg]
+                            idx = idx + 1
+                        else:
+                            args_dict[arg] = next_arg
+                            idx = idx + 2
+                else:
+                    args_dict[arg] = args[idx + 1]
+                    idx = idx + 2
             except IndexError:
-                args_dict[arg] = default_args[arg]
+                if arg in default_args:
+                    args_dict[arg] = default_args[arg]
+                    idx = idx + 1
 
         # Sometimes we want to add something to the end of an URL, for
         # example if we have the argument 'last' for a job, we should
@@ -89,8 +103,6 @@ class Rest():
                   modifier: Optional[str] = '') -> str:
 
         (url, args) = cls.parse_args(command, url)
-
-        print(args)
 
         command = command.split(' ')[0]
         headers = {'Authorization': 'Bearer ' + token}
@@ -158,3 +170,15 @@ class Rest():
         """
 
         return cls.rest_call('DELETE', command, token, url, modifier)
+
+
+if __name__ == '__main__':
+    a = 'firmware_upgrade hostname esk-d10918-d1 activate filename EOS-4.24.2F.swi url http://100.64.100.53/firmware/ pre_flight download reboot'
+    b = 'firmware_upgrade hostname esk-d10918-d1 activate false filename EOS-4.24.2F.swi url http://100.64.100.53/firmware/ pre_flight download reboot'
+    c = 'firmware_upgrade hostname esk-d10918-d1 activate false filename EOS-4.24.2F.swi url http://100.64.100.53/firmware/ pre_flight false download false reboot false'
+
+    Rest.parse_args(a, '')
+    print('')
+    Rest.parse_args(b, '')
+    print('')
+    Rest.parse_args(c, '')

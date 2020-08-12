@@ -258,6 +258,7 @@ cli:
           description: 'SHA1 sum of the firmware'
         - name: 'verify_tls'
           mandatory: true
+          default: true
           description: 'Ignore SSL certificate'
 
   - command:
@@ -278,11 +279,15 @@ cli:
           description: 'Group name'
         - name: 'pre_flight'
           description: 'Do a pre-flight check'
+          default: true
         - name: 'download'
           description: 'Download the firmware to the switch'
+          default: true
         - name: 'activate'
+          default: true
           description: 'Activate the firmware'
         - name: 'reboot'
           description: 'Reboot the swtich when done'
+          default: true
         - name: 'start_at'
           description: 'Schedule the firmware upgrade'
