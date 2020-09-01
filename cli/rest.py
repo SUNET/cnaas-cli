@@ -118,8 +118,8 @@ class Rest():
                 res = requests.put(url, headers=headers, json=args,
                                    verify=False)
             elif method == 'DELETE':
-                res = requests.put(url, headers=headers, json=args,
-                                   verify=False)
+                res = requests.delete(url, headers=headers, json=args,
+                                      verify=False)
             else:
                 return 'Unknown REST method!'
 
