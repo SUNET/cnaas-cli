@@ -291,3 +291,13 @@ cli:
           default: true
         - name: 'start_at'
           description: 'Schedule the firmware upgrade'
+
+  - command:
+      name: 'device_update_facts'
+      description: 'Update device facts'
+      url: '/device_update_facts'
+      show_only: false
+      attributes:
+        - name: 'hostname'
+          mandatory: true
+          description: 'Device hostname'
