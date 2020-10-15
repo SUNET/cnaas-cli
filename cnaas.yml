@@ -235,6 +235,12 @@ cli:
       show_only: true
 
   - command:
+      name: 'files'
+      description: 'Show firmware images'
+      url: '/firmware'
+      show_only: true
+
+  - command:
       name: 'interfaces'
       description: 'Interface'
       url: '/device/<hostname>/interfaces'

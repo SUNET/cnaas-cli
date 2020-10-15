@@ -187,6 +187,7 @@ if __name__ == '__main__':
     c = 'firmware_upgrade hostname esk-d10918-d1 activate false filename EOS-4.24.2F.swi url http://100.64.100.53/firmware/ pre_flight false download false reboot false'
     d = 'firmware_upgrade hostname esk-d31002-a2 filename EOS-4.24.2.3F.swi url http://100.64.100.53/firmware/ pre_flight false download false reboot true activate false'
     e = 'firmware_upgrade hostname esk-d31002-a2 filename EOS-4.24.2.3F.swi url http://100.64.100.53/firmware/ pre_flight false download false reboot true activate false filename kaka'
+    f = 'firmware_upgrade hostname esk-d31002-a2 filename EOS-4.24.2.3F.swi url http://100.64.100.53/firmware/ pre_flight download true reboot false activate'
 
     print(Rest.parse_args(a, ''))
     print('')
@@ -197,3 +198,5 @@ if __name__ == '__main__':
     print(Rest.parse_args(d, ''))
     print('')
     print(Rest.parse_args(e, ''))
+    print('')
+    print(Rest.parse_args(f, ''))
