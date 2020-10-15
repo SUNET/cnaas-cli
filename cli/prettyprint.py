@@ -239,7 +239,10 @@ def prettyprint_jobs_all(data: dict) -> str:
                 if not job['result']:
                     continue
                 if 'error' in job['result']:
-                    error = job['result']['error']
+                    if type(job['result']) == str:
+                        error = job['result']
+                    else:
+                        error = job['result']['error']
 
             # Only print certain fields
             if key not in job_fields:
