@@ -42,12 +42,18 @@ class Rest():
                 num_arg = args[0]
                 args = ['id', num_arg]
 
+        # Check if we have duplicated arguments, we shouldn't handle that.
+        duplicates = set()
+        for i in args:
+            if i not in duplicates:
+                duplicates.add(i)
+            else:
+                if i.lower() != 'true' and i.lower() != 'false':
+                    return('error', 'Duplicated arguments (%s), aborting.' % i)
+
         # We also have to figure out if we have arguments without
         # values, then we should get the default value from the
         # specification and use that.
-
-        idx = 0
-
         while idx < len(args):
             arg = args[idx]
 
@@ -103,6 +109,9 @@ class Rest():
                   modifier: Optional[str] = '') -> str:
 
         (url, args) = cls.parse_args(command, url)
+
+        if url == 'error':
+            return args
 
         command = command.split(' ')[0]
         headers = {'Authorization': 'Bearer ' + token}
@@ -176,9 +185,15 @@ if __name__ == '__main__':
     a = 'firmware_upgrade hostname esk-d10918-d1 activate filename EOS-4.24.2F.swi url http://100.64.100.53/firmware/ pre_flight download reboot'
     b = 'firmware_upgrade hostname esk-d10918-d1 activate false filename EOS-4.24.2F.swi url http://100.64.100.53/firmware/ pre_flight download reboot'
     c = 'firmware_upgrade hostname esk-d10918-d1 activate false filename EOS-4.24.2F.swi url http://100.64.100.53/firmware/ pre_flight false download false reboot false'
+    d = 'firmware_upgrade hostname esk-d31002-a2 filename EOS-4.24.2.3F.swi url http://100.64.100.53/firmware/ pre_flight false download false reboot true activate false'
+    e = 'firmware_upgrade hostname esk-d31002-a2 filename EOS-4.24.2.3F.swi url http://100.64.100.53/firmware/ pre_flight false download false reboot true activate false filename kaka'
 
-    Rest.parse_args(a, '')
+    print(Rest.parse_args(a, ''))
     print('')
-    Rest.parse_args(b, '')
+    print(Rest.parse_args(b, ''))
     print('')
-    Rest.parse_args(c, '')
+    print(Rest.parse_args(c, ''))
+    print('')
+    print(Rest.parse_args(d, ''))
+    print('')
+    print(Rest.parse_args(e, ''))
