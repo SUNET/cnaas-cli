@@ -2,12 +2,6 @@ from typing import Optional, List
 from cli.terminal import get_hline, terminal_size, print_hline, lrstrip
 
 
-forbidden = ['confhash', 'oob_ip', 'infra_ip', 'site_id', 'port', 'dhcp_ip',
-             'ztp_mac', 'platform', 'serial', 'os_version']
-job_fields = ['id', 'status', 'start_time', 'finish_time', 'function_name',
-              'scheduled_by', 'exception']
-
-
 def prettyprint_error(data: dict) -> str:
     """
     Print generic errors returned from the API.
@@ -214,11 +208,20 @@ def prettyprint_jobs_single(data: dict) -> str:
     return output
 
 
-def prettyprint_jobs_all(data: dict) -> str:
+def prettyprint_jobs_all(data: dict, modifier: str) -> str:
     """
     Prettyprinter for all jobs output
 
     """
+    if 'detailed' in modifier:
+        job_fields = ['id', 'status', 'scheduled_time', 'start_time',
+                      'finish_time', 'function_name', 'scheduled_by',
+                      'comment', 'ticket_ref', 'next_job_id', 'next_job',
+                      'change_score',
+                      'exception']
+    else:
+        job_fields = ['id', 'status', 'start_time', 'finish_time',
+                      'function_name', 'scheduled_by', 'exception']
 
     output = ''
     jobs_data = data['data']['jobs']
@@ -226,10 +229,13 @@ def prettyprint_jobs_all(data: dict) -> str:
     jobs_data.reverse()
 
     for field in job_fields:
-        if field == 'id' or field == 'status':
-            output += '%5s\t| ' % field
+        if field == 'id':
+            output += ' %-10s | ' % 'ID'
+        elif field == 'status':
+            output += ' %-10s | ' % 'Status'
         else:
-            output += '%25s\t| ' % field
+            field = field.replace('_', ' ')
+            output += ' %-30s | ' % field.capitalize()
 
     output += '\n' + get_hline(newline=True)
 
@@ -250,21 +256,21 @@ def prettyprint_jobs_all(data: dict) -> str:
 
             # Don't print the backtrace
             if key == 'exception' and job['exception'] is not None:
-                output += '%20s\t ' % job[key]['args'][0]
+                output += ' %-30s | ' % job[key]['args'][0]
                 continue
 
             # Variable column width
             if key == 'id' or key == 'status':
-                output += '%5s\t ' % job[key]
+                output += ' %-10s | ' % job[key]
             else:
-                output += '%25s\t ' % job[key]
+                output += ' %-30s | ' % job[key]
         output += '\n'
     output += '\n'
 
     return output
 
 
-def prettyprint_jobs(data: dict, command: str) -> str:
+def prettyprint_jobs(data: dict, command: str, modifier) -> str:
     """
     Prettyprinter for jobs output
 
@@ -273,16 +279,20 @@ def prettyprint_jobs(data: dict, command: str) -> str:
     nr_jobs = len(data['data']['jobs'])
 
     if nr_jobs > 1:
-        return prettyprint_jobs_all(data)
+        return prettyprint_jobs_all(data, modifier)
 
     return prettyprint_jobs_single(data)
 
 
-def prettyprint_command(data: dict, command: str) -> str:
+def prettyprint_command(data: dict, command: str,
+                        modifier: Optional[str] = None) -> str:
     """
     Prettyprinter for commands
 
     """
+
+    forbidden = ['confhash', 'oob_ip', 'infra_ip', 'site_id', 'port', 'dhcp_ip',
+                 'ztp_mac', 'platform', 'serial', 'os_version']
 
     output = ''
     headers = []
@@ -293,6 +303,9 @@ def prettyprint_command(data: dict, command: str) -> str:
         content = data['data'][command]
     else:
         content = data['data']
+
+    if 'detailed' in modifier:
+        forbidden = []
 
     try:
         for row in content:
@@ -316,23 +329,24 @@ def prettyprint_command(data: dict, command: str) -> str:
             values += '\n'
         for header in headers:
             if header == 'id':
-                header_formatted += ' %-5s |' % str(header)
+                header_formatted += ' %-5s |' % 'ID'
             elif header == 'management_ip':
-                header_formatted += ' %-16s |' % str(header)
+                header_formatted += ' %-16s |' % 'Management IP'
             elif header == 'model':
-                header_formatted += ' %-20s |' % str(header)
+                header_formatted += ' %-20s |' % 'Model'
             elif header == 'hostname':
-                header_formatted += ' %-20s |' % str(header)
+                header_formatted += ' %-20s |' % 'Hostname'
             elif header == 'last_seen':
-                header_formatted += ' %-30s |' % str(header)
+                header_formatted += ' %-30s |' % 'Last seen'
             else:
-                header_formatted += ' %-15s |' % str(header)
+                header = header.replace('_', ' ')
+                header_formatted += ' %-15s |' % str(header.capitalize())
 
         values = values.replace('\\n', '\n')
         width, height = terminal_size()
     except Exception:
         print(data)
-        return 'Failed to parse output\n'
+        return('Failed to parse output\n')
 
     return header_formatted + '\n' + '-' * width + '\n' + values + '\n'
 
@@ -410,6 +424,9 @@ def prettyprint_modifier(lines, modifier):
             if args not in line:
                 continue
             output += line + '\n'
+    else:
+        output = lines
+
     output += '\n'
 
     return output
@@ -427,7 +444,7 @@ def prettyprint(data: dict, command: str, modifier: Optional[str] = '') -> str:
         command = 'jobs'
 
     if 'data' in data and 'jobs' in data['data']:
-        output = prettyprint_jobs(data, command)
+        output = prettyprint_jobs(data, command, modifier)
     elif 'data' in data and 'files' in data['data']:
         output = prettyprint_firmware(data, command)
     elif 'job_id' in data:
@@ -439,7 +456,7 @@ def prettyprint(data: dict, command: str, modifier: Optional[str] = '') -> str:
     elif 'data' in data and command == 'device':
         output = prettyprint_device(data)
     elif 'data' in data and command in data['data']:
-        output = prettyprint_command(data, command)
+        output = prettyprint_command(data, command, modifier)
     elif 'status' in data and data['status'] == 'error':
         output = prettyprint_error(data)
     else:

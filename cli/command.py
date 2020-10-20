@@ -37,7 +37,7 @@ class CliHandler():
         self.cli = CliParser(model)
         self.builtin = ['no', 'show', 'help', 'history', 'quit', 'update']
         self.modifiers = ['|']
-        self.modifiers_commands = ['grep', 'monitor']
+        self.modifiers_commands = ['grep', 'monitor', 'detailed']
 
         readline.set_completer(self.complete)
         readline.parse_and_bind('?: complete')
@@ -128,6 +128,7 @@ class CliHandler():
         print('\nModifiers')
         print('  %-20s Grep after a given string' % 'grep')
         print('  %-20s Monitor the output of a show command' % 'monitor')
+        print('  %-20s Print detailed information' % 'detailed')
         print('\nOther commands:')
 
         for command in self.cli.get_commands():
