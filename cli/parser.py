@@ -122,6 +122,8 @@ class CliParser():
         for cmd in self.cli.cli:
             if cmd.command.name != command:
                 continue
+            if cmd.command.attributes is None:
+                return attributes
             for attr in cmd.command.attributes:
                 if attr.show:
                     attributes.append(attr.name)
@@ -134,6 +136,8 @@ class CliParser():
         for cmd in self.cli.cli:
             if cmd.command.name != command:
                 continue
+            if cmd.command.attributes is None:
+                return attributes
             for attr in cmd.command.attributes:
                 if attr.delete:
                     attributes.append(attr.name)
