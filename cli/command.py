@@ -5,6 +5,7 @@ import time
 import signal
 import string
 import readline
+import rlcompleter
 
 from cli.terminal import print_hline
 from cli.parser import CliParser
@@ -39,9 +40,15 @@ class CliHandler():
         self.modifiers_commands = ['grep', 'monitor']
 
         readline.set_completer(self.complete)
-        readline.parse_and_bind('tab: complete')
         readline.parse_and_bind('?: complete')
         readline.parse_and_bind('"\\C-l": clear-screen')
+
+        if 'libedit' in readline.__doc__:
+            readline.parse_and_bind("bind ^I rl_complete")
+        else:
+            readline.parse_and_bind("tab: complete")
+
+        readline.parse_and_bind("bind ^I rl_complete")
         readline.set_completion_display_matches_hook(self.print_suggestions)
 
         if banner != '':
