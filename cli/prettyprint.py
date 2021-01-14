@@ -292,7 +292,7 @@ def prettyprint_command(data: dict, command: str,
     """
 
     forbidden = ['confhash', 'oob_ip', 'infra_ip', 'site_id', 'port', 'dhcp_ip',
-                 'ztp_mac', 'platform', 'serial', 'os_version']
+                 'ztp_mac', 'platform', 'serial', 'last_seen']
 
     output = ''
     headers = []
@@ -324,6 +324,8 @@ def prettyprint_command(data: dict, command: str,
                     values += ' %-20s |' % str(row[key])
                 elif key == 'last_seen':
                     values += ' %-30s |' % str(row[key])
+                elif key == 'os_version':
+                    values += ' %-30s |' % str(row[key])
                 else:
                     values += ' %-15s |' % str(row[key])
             values += '\n'
@@ -338,6 +340,8 @@ def prettyprint_command(data: dict, command: str,
                 header_formatted += ' %-20s |' % 'Hostname'
             elif header == 'last_seen':
                 header_formatted += ' %-30s |' % 'Last seen'
+            elif header == 'os_version':
+                header_formatted += ' %-30s |' % 'OS version'
             else:
                 header = header.replace('_', ' ')
                 header_formatted += ' %-15s |' % str(header.capitalize())
