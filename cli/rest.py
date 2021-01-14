@@ -1,12 +1,11 @@
 import re
-import requests
+from typing import Optional
 
-from typing import Optional, List
-from cli.parser import CliParser
-from cli.prettyprint import prettyprint
-from typing import Optional, List
+import requests
 from urllib3.exceptions import InsecureRequestWarning
 
+from cli.parser import CliParser
+from cli.prettyprint import prettyprint
 
 requests.packages.urllib3.disable_warnings(category=InsecureRequestWarning)
 
@@ -135,7 +134,7 @@ class Rest():
             if res.status_code != 200:
                 return prettyprint(res.json(), command)
 
-        except Exception as e:
+        except Exception:
             return 'Could not execute command\n\n'
 
         return prettyprint(res.json(), command, modifier=modifier)

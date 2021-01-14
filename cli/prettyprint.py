@@ -1,5 +1,6 @@
-from typing import Optional, List
-from cli.terminal import get_hline, terminal_size, print_hline, lrstrip
+from typing import Optional
+
+from cli.terminal import get_hline, lrstrip, terminal_size
 
 
 def prettyprint_error(data: dict) -> str:
@@ -42,7 +43,8 @@ def prettyprint_device(data: dict) -> str:
     output += '  %-30s %-30s\n' % ('Hostname:', device_data['hostname'])
     output += '  %-30s %-30s\n' % ('Site iD:', device_data['site_id'])
     output += '  %-30s %-30s\n' % ('Description:', device_data['description'])
-    output += '  %-30s %-30s\n' % ('Managemnt IP:', device_data['management_ip'])
+    output += '  %-30s %-30s\n' % ('Managemnt IP:',
+                                   device_data['management_ip'])
     output += '  %-30s %-30s\n' % ('DHCP IP:', device_data['dhcp_ip'])
     output += '  %-30s %-30s\n' % ('Infra IP:', device_data['infra_ip'])
     output += '  %-30s %-30s\n' % ('OOP IP:', device_data['oob_ip'])
@@ -53,10 +55,12 @@ def prettyprint_device(data: dict) -> str:
     output += '  %-30s %-30s\n' % ('Model:', device_data['model'])
     output += '  %-30s %-30s\n' % ('OS version:', device_data['os_version'])
     output += '  %-30s %-30s\n' % ('Hostname:', device_data['hostname'])
-    output += '  %-30s %-30s\n' % ('Synchronized:', device_data['synchronized'])
+    output += '  %-30s %-30s\n' % ('Synchronized:',
+                                   device_data['synchronized'])
     output += '  %-30s %-30s\n' % ('State:', device_data['state'])
     output += '  %-30s %-30s\n' % ('Device type:', device_data['device_type'])
-    output += '  %-30s %-30s\n' % ('Configuration hash:', device_data['confhash'])
+    output += '  %-30s %-30s\n' % ('Configuration hash:',
+                                   device_data['confhash'])
     output += '  %-30s %-30s\n' % ('Last seen:', device_data['last_seen'])
     output += '  %-30s %-30s\n' % ('Port:', device_data['port'])
     output += '\n'
@@ -190,7 +194,8 @@ def prettyprint_jobs_single(data: dict) -> str:
 
     output += '  %-30s %-50d\n' % ('ID:', job_data['id'])
     output += '  %-30s %-50s\n' % ('Status:', job_data['status'])
-    output += '  %-30s %-50s\n' % ('Scheduled time:', job_data['scheduled_time'])
+    output += '  %-30s %-50s\n' % ('Scheduled time:',
+                                   job_data['scheduled_time'])
     output += '  %-30s %-50s\n' % ('Start time:', job_data['start_time'])
     output += '  %-30s %-30s\n' % ('Finish time: ', job_data['finish_time'])
     output += '  %-30s %-30s\n' % ('Scheduled by:', job_data['scheduled_by'])

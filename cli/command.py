@@ -1,16 +1,12 @@
 import os
 import re
+import readline
 import sys
 import time
-import signal
-import string
-import readline
-import rlcompleter
+from typing import Optional
 
-from cli.terminal import print_hline
 from cli.parser import CliParser
 from cli.rest import Rest
-from typing import Optional, List
 
 
 class CliHandler():

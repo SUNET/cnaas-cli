@@ -1,7 +1,7 @@
-import sys
 import getopt
-
+import sys
 from urllib.parse import urlparse
+
 from cli.command import CliHandler
 
 

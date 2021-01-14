@@ -1,7 +1,6 @@
 import fcntl
-import termios
 import struct
-
+import termios
 from typing import Optional
 
 

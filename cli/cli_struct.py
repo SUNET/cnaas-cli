@@ -1,7 +1,6 @@
-import yaml
-
 from typing import List, Optional
-from pydantic import BaseModel, Schema
+
+from pydantic import BaseModel
 
 
 class f_cli_methods(BaseModel):

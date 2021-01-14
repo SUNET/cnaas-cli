@@ -1,7 +1,6 @@
 import yaml
 
 from cli.cli_struct import f_cli
-from typing import Optional, List
 
 
 class CliParser():
