@@ -44,7 +44,6 @@ class CliHandler():
         else:
             readline.parse_and_bind("tab: complete")
 
-        readline.parse_and_bind("bind ^I rl_complete")
         readline.set_completion_display_matches_hook(self.print_suggestions)
 
         if banner != '':
