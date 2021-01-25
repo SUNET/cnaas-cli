@@ -1,6 +1,38 @@
+import sys
+import getopt
+import requests
+
 from typing import Optional
 
 from cli.terminal import get_hline, lrstrip, terminal_size
+
+def ids_to_hostnames() -> str:
+    devices = {}
+
+    try:
+        opts, args = getopt.getopt(sys.argv[1:], 'u:t:')
+    except getopt.GetoptError:
+        return None
+
+    for opt, arg in opts:
+        if opt == '-u':
+            url = arg
+        if opt == '-t':
+            token = arg
+    headers = {'Authorization': 'Bearer ' + token}
+    url = url + '/devices'
+
+    res = requests.get(url,
+                       headers=headers,
+                       verify=False)
+
+    if 'data' not in res.json():
+        return None
+
+    for device in res.json()['data']['devices']:
+        devices[device['id']] = device['hostname']
+
+    return devices
 
 
 def prettyprint_error(data: dict) -> str:
@@ -312,6 +344,9 @@ def prettyprint_command(data: dict, command: str,
     if 'detailed' in modifier:
         forbidden = []
 
+    if command == 'linknets':
+        id_mapping = ids_to_hostnames()
+
     try:
         for row in content:
             for key in row:
@@ -331,6 +366,9 @@ def prettyprint_command(data: dict, command: str,
                     values += ' %-30s |' % str(row[key])
                 elif key == 'os_version':
                     values += ' %-30s |' % str(row[key])
+                elif key == 'device_a_id' or key == 'device_b_id':
+                    if row[key] in id_mapping:
+                        values += ' %-20s |' % str(id_mapping[row[key]])
                 else:
                     values += ' %-15s |' % str(row[key])
             values += '\n'
@@ -347,6 +385,10 @@ def prettyprint_command(data: dict, command: str,
                 header_formatted += ' %-30s |' % 'Last seen'
             elif header == 'os_version':
                 header_formatted += ' %-30s |' % 'OS version'
+            elif header == 'device_a_id':
+                header_formatted += ' %-20s |' % 'Device b id'
+            elif header == 'device_b_id':
+                header_formatted += ' %-20s |' % 'Device b id'
             else:
                 header = header.replace('_', ' ')
                 header_formatted += ' %-15s |' % str(header.capitalize())

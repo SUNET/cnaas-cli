@@ -40,6 +40,7 @@ class CliHandler():
         readline.parse_and_bind('"\\C-l": clear-screen')
 
         if 'libedit' in readline.__doc__:
+            import rlcompleter
             readline.parse_and_bind("bind ^I rl_complete")
         else:
             readline.parse_and_bind("tab: complete")
