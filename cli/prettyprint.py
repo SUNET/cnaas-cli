@@ -6,13 +6,18 @@ from typing import Optional
 
 from cli.terminal import get_hline, lrstrip, terminal_size
 
-def ids_to_hostnames() -> str:
-    devices = {}
+
+def ids_to_hostnames() -> dict:
+    """
+    Return a dict of IDs and hostnames.
+    """
+
+    devices: dict = {}
 
     try:
         opts, args = getopt.getopt(sys.argv[1:], 'u:t:')
     except getopt.GetoptError:
-        return None
+        return devices
 
     for opt, arg in opts:
         if opt == '-u':
@@ -27,7 +32,7 @@ def ids_to_hostnames() -> str:
                        verify=False)
 
     if 'data' not in res.json():
-        return None
+        return devices
 
     for device in res.json()['data']['devices']:
         devices[device['id']] = device['hostname']
@@ -328,13 +333,14 @@ def prettyprint_command(data: dict, command: str,
 
     """
 
-    forbidden = ['confhash', 'oob_ip', 'infra_ip', 'site_id', 'port', 'dhcp_ip',
-                 'ztp_mac', 'platform', 'serial', 'last_seen']
+    forbidden = ['confhash', 'oob_ip', 'infra_ip', 'port', 'dhcp_ip',
+                 'ztp_mac', 'platform', 'serial', 'last_seen', 'esi_mac']
 
     output = ''
     headers = []
     values = ''
     header_formatted = ''
+    id_mapping = None
 
     if command in data['data']:
         content = data['data'][command]
@@ -344,9 +350,8 @@ def prettyprint_command(data: dict, command: str,
     if 'detailed' in modifier:
         forbidden = []
 
-    if command == 'linknets':
+    if command == 'linknets' or command == 'mgmtdomains':
         id_mapping = ids_to_hostnames()
-
     try:
         for row in content:
             for key in row:
@@ -367,11 +372,13 @@ def prettyprint_command(data: dict, command: str,
                 elif key == 'os_version':
                     values += ' %-30s |' % str(row[key])
                 elif key == 'device_a_id' or key == 'device_b_id':
-                    if row[key] in id_mapping:
-                        values += ' %-20s |' % str(id_mapping[row[key]])
+                    if command == 'linknets' or command == 'mgmtdomains':
+                        if row[key] in id_mapping:
+                            values += ' %-20s |' % str(id_mapping[row[key]])
                 else:
                     values += ' %-15s |' % str(row[key])
             values += '\n'
+
         for header in headers:
             if header == 'id':
                 header_formatted += ' %-5s |' % 'ID'
@@ -386,18 +393,18 @@ def prettyprint_command(data: dict, command: str,
             elif header == 'os_version':
                 header_formatted += ' %-30s |' % 'OS version'
             elif header == 'device_a_id':
-                header_formatted += ' %-20s |' % 'Device b id'
+                header_formatted += ' %-20s |' % 'Device a id'
             elif header == 'device_b_id':
                 header_formatted += ' %-20s |' % 'Device b id'
             else:
                 header = header.replace('_', ' ')
                 header_formatted += ' %-15s |' % str(header.capitalize())
-
-        values = values.replace('\\n', '\n')
-        width, height = terminal_size()
     except Exception:
         print(data)
         return('Failed to parse output\n')
+
+    values = values.replace('\\n', '\n')
+    width, height = terminal_size()
 
     return header_formatted + '\n' + '-' * width + '\n' + values + '\n'
 

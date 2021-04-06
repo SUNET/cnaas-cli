@@ -62,7 +62,7 @@ class CliParser():
 
         return cmd_attrs
 
-    def get_mandatory(self, command: str, attribute: str) -> list:
+    def get_mandatory(self, command: str, attribute: str) -> bool:
         """
         Return whether an attribute is mandatory or not
 
@@ -77,14 +77,14 @@ class CliParser():
                     return True
                 else:
                     return False
-        return None
+        return False
 
-    def get_attributes_default(self, command: str) -> list:
+    def get_attributes_default(self, command: str) -> dict:
         """
         Return whether an attribute have an default value or not
 
         """
-        attributes = dict()
+        attributes: dict = dict()
 
         for cmd in self.cli.cli:
             if cmd.command.name != command:
@@ -103,7 +103,7 @@ class CliParser():
 
         """
 
-        description = ''
+        description: str = ''
 
         for cmd in self.cli.cli:
             if cmd.command.name != command:
@@ -115,8 +115,8 @@ class CliParser():
 
         return description
 
-    def get_attributes_show(self, command: str) -> str:
-        attributes = []
+    def get_attributes_show(self, command: str) -> list:
+        attributes: list = []
 
         for cmd in self.cli.cli:
             if cmd.command.name != command:
@@ -129,8 +129,8 @@ class CliParser():
 
         return attributes
 
-    def get_attributes_no(self, command: str) -> str:
-        attributes = []
+    def get_attributes_no(self, command: str) -> list:
+        attributes: list = []
 
         for cmd in self.cli.cli:
             if cmd.command.name != command:
@@ -149,7 +149,7 @@ class CliParser():
 
         """
 
-        url = ''
+        url: str = ''
 
         for cmd in self.cli.cli:
             if cmd.command.name != command:
@@ -158,7 +158,7 @@ class CliParser():
 
         return url
 
-    def get_use_put(self, command: str) -> list:
+    def get_use_put(self, command: str) -> bool:
         """
         Return true if we should use PUT instead of POST
 
@@ -176,7 +176,7 @@ class CliParser():
         Return true if this command is a show command only
 
         """
-        commands = []
+        commands: list = []
 
         for cmd in self.cli.cli:
             if not cmd.command.show_only:
@@ -185,7 +185,7 @@ class CliParser():
         return commands
 
     def get_delete(self) -> list:
-        commands = []
+        commands: list = []
 
         for cmd in self.cli.cli:
             if cmd.command.delete:
@@ -198,7 +198,7 @@ class CliParser():
         Return true if this command can do show
 
         """
-        commands = []
+        commands: list = []
 
         for cmd in self.cli.cli:
             if not cmd.command.no_show:
@@ -211,7 +211,7 @@ class CliParser():
         Return true if this command can be updated
 
         """
-        commands = []
+        commands: list = []
 
         for cmd in self.cli.cli:
             if cmd.command.update:
@@ -229,10 +229,10 @@ class CliParser():
             if cmd.command.name != command:
                 continue
             if cmd.command.attributes is None:
-                return None
+                return False
             for attr in cmd.command.attributes:
                 if attr.name != attribute:
                     continue
                 return attr.url_suffix
 
-        return None
+        return False

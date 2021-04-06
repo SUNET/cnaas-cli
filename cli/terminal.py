@@ -13,13 +13,17 @@ def print_hline(character: Optional[str] = '-',
 
     print(get_hline(character, newline, width))
 
+    return None
+
 
 def get_hline(character: Optional[str] = '-',
               newline: Optional[bool] = True,
-              width: Optional[int] = 0) -> None:
+              width: Optional[int] = 0) -> str:
     """
     Return the same number of characters as the terminal width
     """
+
+    line: str = ""
 
     if width == 0:
         width, height = terminal_size()
