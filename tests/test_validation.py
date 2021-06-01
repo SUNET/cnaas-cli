@@ -13,10 +13,7 @@ class CliTests(unittest.TestCase):
         ]
 
         self.invalid_commands = [
-            'sync 9',
-            'test test test',
             'device',
-            'device 123 hostname test'
         ]
 
         self.help_commands = [
