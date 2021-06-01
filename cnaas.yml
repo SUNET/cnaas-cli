@@ -2,7 +2,7 @@
 cli:
   - command:
       name: 'device_init'
-      description: 'Initializd a device'
+      description: 'Initialized a device'
       url: '/device_init'
       no_show: true
       attributes:
